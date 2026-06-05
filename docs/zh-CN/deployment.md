@@ -1,22 +1,22 @@
 [文档首页](./README.md)
 
-# Deployment
+# 部署
 
-本 repository 包含 local development Compose setup 和 backend Dockerfile。当前不包含 production infrastructure，也不包含单独的 frontend container image。
+本仓库包含用于本地开发的 Compose 配置和后端 Dockerfile。当前不包含生产基础设施，也不包含单独的前端容器镜像。
 
-## Backend Image
+## 后端镜像
 
-[../../backend/Dockerfile](../../backend/Dockerfile) 使用 Java 21 构建 Spring Boot jar，然后在 Java 21 JRE image 中运行。Container 暴露 port `8080`。
+[../../backend/Dockerfile](../../backend/Dockerfile) 使用 Java 21 构建 Spring Boot jar，然后在 Java 21 JRE image 中运行。容器暴露端口 `8080`。
 
-Entrypoint 运行：
+入口命令运行：
 
 ```sh
 java -jar /app/springboot-angular-auth-starter-backend.jar --spring.profiles.active=${SPRING_PROFILES_ACTIVE:-local}
 ```
 
-Local development 之外应显式设置 `SPRING_PROFILES_ACTIVE`。
+本地开发以外的环境应显式设置 `SPRING_PROFILES_ACTIVE`。
 
-## Backend Runtime Configuration
+## 后端运行时配置
 
 至少配置：
 
@@ -29,7 +29,7 @@ Local development 之外应显式设置 `SPRING_PROFILES_ACTIVE`。
 - `AUTH_STARTER_BASELINE_AUTH_BREAK_GLASS_ENABLED`
 - `AUTH_STARTER_NOTIFICATION_EMAIL_PROVIDER`
 
-使用 SMTP delivery 时，还要配置：
+使用 SMTP 邮件投递时，还要配置：
 
 - `AUTH_STARTER_SMTP_HOST`
 - `AUTH_STARTER_SMTP_PORT`
@@ -40,7 +40,7 @@ Local development 之外应显式设置 `SPRING_PROFILES_ACTIVE`。
 
 部署前查看 [../../.env.example](../../.env.example) 和 [../../backend/src/main/resources/application.yml](../../backend/src/main/resources/application.yml)。
 
-## Frontend Build
+## 前端构建
 
 构建 Angular app：
 
@@ -50,10 +50,10 @@ npx -y pnpm@10.6.5 install --frozen-lockfile
 npx -y pnpm@10.6.5 build
 ```
 
-Development environment 当前指向 `http://localhost:8080`。`RuntimeConfigService` 已有 runtime config support，[../../frontend/public/config.template.json](../../frontend/public/config.template.json) 展示 expected shape，但需要 environment file 设置 `runtimeConfigPath` 后 app 才会加载 remote runtime config。
+开发环境当前指向 `http://localhost:8080`。`RuntimeConfigService` 已支持 runtime config，[../../frontend/public/config.template.json](../../frontend/public/config.template.json) 展示配置文件格式；但需要在环境文件中设置 `runtimeConfigPath` 后，应用才会加载远程 runtime config。
 
-## Local Compose Scope
+## 本地 Compose 范围
 
-[../../docker-compose.yml](../../docker-compose.yml) 用于 local development，启动 PostgreSQL 和 backend。它不是 production deployment template。
+[../../docker-compose.yml](../../docker-compose.yml) 用于本地开发，启动 PostgreSQL 和后端。它不是生产部署模板。
 
 部署到真实系统前，请检查 cookie security、HTTPS、CORS origins、SMTP、password policy、monitoring、backup、retention 和 operational access。

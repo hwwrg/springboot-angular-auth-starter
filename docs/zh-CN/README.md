@@ -2,21 +2,21 @@
 
 # 文档
 
-本目录是 [../../README.zh-CN.md](../../README.zh-CN.md) 的详细文档。英文 [../../README.md](../../README.md) 是 primary source of truth。
+本目录包含 [../../README.zh-CN.md](../../README.zh-CN.md) 对应的详细文档。英文 [../../README.md](../../README.md) 仍是本项目文档的权威来源。
 
 ## 指南
 
 - [入门](./getting-started.md)
 - [架构](./architecture.md)
-- [Authentication](./authentication.md)
-- [Deployment](./deployment.md)
-- [Troubleshooting](./troubleshooting.md)
+- [认证](./authentication.md)
+- [部署](./deployment.md)
+- [故障排查](./troubleshooting.md)
 
-## Repository References
+## 仓库参考
 
-- [Backend README](../../backend/README.md)
-- [Frontend README](../../frontend/README.md)
+- [后端 README](../../backend/README.md)
+- [前端 README](../../frontend/README.md)
 - [GraphQL schema](../../backend/src/main/resources/graphql/schema.graphqls)
 - [Docker Compose](../../docker-compose.yml)
-- [Environment example](../../.env.example)
-- [Documentation maintenance](../documentation-maintenance.md)
+- [环境变量示例](../../.env.example)
+- [文档维护](../documentation-maintenance.md)
