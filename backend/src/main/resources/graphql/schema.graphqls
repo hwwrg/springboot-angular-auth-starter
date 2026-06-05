@@ -1,0 +1,181 @@
+type Query {
+  readiness: Readiness!
+  currentSession: AuthSession!
+  rbacBaseline: RbacBaseline!
+  currentUserProfile: CurrentUserProfile
+  currentOrganizationContext: OrganizationContext
+  foundationOrganizations: [OrganizationSummary!]!
+  notificationEvents: [NotificationEvent!]!
+  adminManagementBaseline: AdminManagementBaseline!
+}
+
+type Mutation {
+  login(input: LoginInput!): AuthSession!
+  logout: AuthSession!
+  changeOwnPassword(input: ChangeOwnPasswordInput!): AuthSession!
+  acceptUserInvite(input: AcceptUserInviteInput!): InvitationPasswordSetup!
+  requestPasswordReset(input: PasswordResetRequestInput!): PasswordReset!
+  resetPassword(input: PasswordResetCompleteInput!): PasswordReset!
+  adminCreateUser(input: CreateAdminUserInput!): AdminUserSummary!
+  adminUpdateUser(input: UpdateAdminUserInput!): AdminUserSummary!
+}
+
+type Readiness {
+  status: String!
+  application: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input AcceptUserInviteInput {
+  token: String!
+  newPassword: String!
+}
+
+input PasswordResetRequestInput {
+  email: String!
+}
+
+input PasswordResetCompleteInput {
+  token: String!
+  newPassword: String!
+}
+
+input ChangeOwnPasswordInput {
+  currentPassword: String
+  newPassword: String!
+}
+
+type AuthSession {
+  authenticated: Boolean!
+  principal: AuthPrincipal
+  mustChangePassword: Boolean!
+}
+
+type AuthPrincipal {
+  id: ID!
+  email: String!
+  displayName: String!
+  roles: [String!]!
+  mustChangePassword: Boolean!
+}
+
+type InvitationPasswordSetup {
+  userId: ID!
+  email: String!
+  status: String!
+}
+
+type PasswordReset {
+  message: String!
+}
+
+type RbacBaseline {
+  status: String!
+  resolvedRoles: [String!]!
+}
+
+type CurrentUserProfile {
+  id: ID!
+  email: String!
+  displayName: String!
+  status: String!
+  currentOrganization: OrganizationContext
+  memberships: [OrganizationMembership!]!
+}
+
+type OrganizationContext {
+  organizationId: ID!
+  organizationDisplayName: String!
+  organizationStatus: String!
+  workspaceId: ID!
+  workspaceCode: String!
+  workspaceStatus: String!
+  role: String!
+}
+
+type OrganizationMembership {
+  organizationId: ID!
+  organizationDisplayName: String!
+  organizationStatus: String!
+  workspaceId: ID!
+  workspaceCode: String!
+  role: String!
+  status: String!
+  primaryMembership: Boolean!
+}
+
+type OrganizationSummary {
+  id: ID!
+  displayName: String!
+  legalName: String!
+  status: String!
+  workspaceId: ID!
+  workspaceCode: String!
+}
+
+type NotificationEvent {
+  id: ID!
+  organizationId: ID!
+  workspaceId: ID!
+  sourceType: String!
+  sourceId: ID!
+  eventType: String!
+  recipientType: String!
+  recipientId: ID
+  recipientDisplayName: String!
+  recipientEmail: String
+  channel: String!
+  provider: String!
+  deliveryStatus: String!
+  providerMessageId: String
+  failureReason: String
+  createdAt: String!
+  sentAt: String
+  updatedAt: String!
+}
+
+input CreateAdminUserInput {
+  email: String!
+  displayName: String!
+  userStatus: String!
+  role: String!
+  membershipStatus: String!
+  primaryMembership: Boolean!
+}
+
+input UpdateAdminUserInput {
+  id: ID!
+  displayName: String!
+  userStatus: String!
+  role: String!
+  membershipStatus: String!
+  primaryMembership: Boolean!
+}
+
+type AdminManagementBaseline {
+  currentOrganization: OrganizationContext!
+  users: [AdminUserSummary!]!
+  notificationEvents: [NotificationEvent!]!
+  totals: AdminManagementTotals!
+}
+
+type AdminManagementTotals {
+  userCount: Int!
+  notificationEventCount: Int!
+}
+
+type AdminUserSummary {
+  id: ID!
+  email: String!
+  displayName: String!
+  status: String!
+  role: String!
+  membershipStatus: String!
+  primaryMembership: Boolean!
+  createdAt: String!
+  updatedAt: String!
+}

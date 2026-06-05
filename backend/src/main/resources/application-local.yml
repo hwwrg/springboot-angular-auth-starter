@@ -1,0 +1,29 @@
+spring:
+  graphql:
+    graphiql:
+      enabled: true
+
+server:
+  servlet:
+    session:
+      cookie:
+        secure: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+authstarter:
+  auth:
+    baseline:
+      additional-users:
+        - email: org-admin@authstarter.local
+          password: authstarter-local-password
+          display-name: Demo Organization Admin
+          role: ORG_ADMIN
+        - email: user@authstarter.local
+          password: authstarter-local-password
+          display-name: Demo User
+          role: USER

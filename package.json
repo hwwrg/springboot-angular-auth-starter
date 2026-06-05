@@ -1,0 +1,15 @@
+{
+  "name": "springboot-angular-auth-starter",
+  "packageManager": "pnpm@10.6.5",
+  "scripts": {
+    "backend:test": "cd backend && ./gradlew test",
+    "backend:build": "cd backend && ./gradlew bootJar",
+    "frontend:lint": "cd frontend && pnpm lint",
+    "frontend:test": "cd frontend && pnpm test",
+    "frontend:build": "cd frontend && pnpm build"
+  },
+  "engines": {
+    "node": "22.14.0",
+    "pnpm": "10.6.5"
+  }
+}

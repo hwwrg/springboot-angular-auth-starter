@@ -1,0 +1,42 @@
+.DS_Store
+__MACOSX/
+._*
+Thumbs.db
+
+# Build outputs
+build/
+dist/
+target/
+out/
+coverage/
+.angular/
+.gradle/
+.npm/
+.pnpm-store/
+
+# Dependencies
+node_modules/
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Local runtime artifacts
+.local/
+logs/
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+
+# IDE metadata
+.idea/
+.vscode/
+.history/
+.project
+.classpath
+.settings/

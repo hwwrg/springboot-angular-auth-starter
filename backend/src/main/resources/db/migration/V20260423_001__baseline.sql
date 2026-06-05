@@ -1,0 +1,2 @@
+-- NO-TICKET baseline migration for the backend application skeleton.
+-- This migration intentionally creates no application tables.

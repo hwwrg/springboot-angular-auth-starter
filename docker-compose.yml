@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: authstarter-postgres
+    environment:
+      POSTGRES_DB: authstarter
+      POSTGRES_USER: authstarter
+      POSTGRES_PASSWORD: authstarter
+    ports:
+      - "5432:5432"
+    volumes:
+      - authstarter-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U authstarter -d authstarter"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    container_name: authstarter-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      AUTH_STARTER_DATASOURCE_URL: jdbc:postgresql://postgres:5432/authstarter
+      AUTH_STARTER_DATASOURCE_USERNAME: authstarter
+      AUTH_STARTER_DATASOURCE_PASSWORD: authstarter
+      AUTH_STARTER_FRONTEND_ORIGIN: http://localhost:4200
+      AUTH_STARTER_SESSION_COOKIE_SECURE: "false"
+      AUTH_STARTER_BASELINE_AUTH_USERNAME: operator@authstarter.local
+      AUTH_STARTER_BASELINE_AUTH_PASSWORD: authstarter-local-password
+      AUTH_STARTER_BASELINE_AUTH_DISPLAY_NAME: Baseline Operator
+      AUTH_STARTER_BASELINE_AUTH_ROLE: SUPERADMIN
+      AUTH_STARTER_NOTIFICATION_EMAIL_PROVIDER: local-mock
+      AUTH_STARTER_SMTP_HOST: localhost
+      AUTH_STARTER_SMTP_PORT: "1025"
+    ports:
+      - "8080:8080"
+
+volumes:
+  authstarter-postgres-data:
