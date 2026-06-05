@@ -38,7 +38,9 @@
 - `operator@authstarter.local`
 - `authstarter-local-password`
 
-如果数据库凭据被修改，已配置的 break-glass user 只有在 `AUTH_STARTER_BASELINE_AUTH_BREAK_GLASS_ENABLED=true` 时可用。
+这些凭据是 local-only，并且需要 `local`/`dev` profile 或 Docker Compose。Break-glass 认证在 `application.yml` 中默认关闭；已配置的 break-glass users 只有在 `AUTH_STARTER_BASELINE_AUTH_BREAK_GLASS_ENABLED=true` 时可用。
+
+如果重复公开认证请求因为 rate limit 失败，请等待当前窗口过期。生产部署应使用 Redis 等分布式 limiter，而不是内置内存 limiter。
 
 ## 无法访问管理员页面
 

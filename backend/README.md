@@ -10,6 +10,8 @@ Spring Boot GraphQL backend for `springboot-angular-auth-starter`.
 
 The backend expects PostgreSQL by default at `jdbc:postgresql://localhost:5432/authstarter`.
 
+The `local` profile enables local-only demo break-glass credentials. Break-glass authentication is disabled by default in `application.yml`.
+
 ## Test
 
 ```sh

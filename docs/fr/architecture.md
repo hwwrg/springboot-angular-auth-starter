@@ -47,4 +47,4 @@ Le role enum courant est :
 - `ORG_ADMIN`
 - `USER`
 
-Les admin routes et opérations GraphQL demandent `SUPERADMIN` ou `ORG_ADMIN` ; seul un `SUPERADMIN` existant peut attribuer `SUPERADMIN`.
+Les admin routes et opérations GraphQL demandent `SUPERADMIN` ou `ORG_ADMIN`. Seul `SUPERADMIN` peut attribuer ou modifier `SUPERADMIN` ; `ORG_ADMIN` ne peut pas modifier les utilisateurs `SUPERADMIN`, ne peut pas changer son propre role/status, et ne peut pas attribuer `ORG_ADMIN` sauf si la policy backend l'autorise explicitement.

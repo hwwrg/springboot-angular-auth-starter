@@ -19,7 +19,7 @@ docker compose up --build
 
 Cela démarre :
 
-- `postgres` sur le host port `5432`
+- `postgres` sur `127.0.0.1:5432`
 - `backend` sur le host port `8080`
 
 Le fichier Compose courant définit directement les variables locales du backend. [../../.env.example](../../.env.example) sert de référence pour les valeurs configurables.
@@ -54,9 +54,13 @@ La datasource par défaut est `jdbc:postgresql://localhost:5432/authstarter`.
 
 ## Login Local
 
+Ces identifiants sont des identifiants de démonstration local-only. Ils sont activés par le profil `local` et Docker Compose, et ne doivent pas être utilisés dans un environnement déployé.
+
 - `operator@authstarter.local` / `authstarter-local-password` / `SUPERADMIN`
 - `org-admin@authstarter.local` / `authstarter-local-password` / `ORG_ADMIN`
 - `user@authstarter.local` / `authstarter-local-password` / `USER`
+
+L'authentification break-glass est désactivée par défaut dans `application.yml` ; la configuration locale l'active explicitement pour ces utilisateurs de démonstration.
 
 ## Vérifications Utiles
 

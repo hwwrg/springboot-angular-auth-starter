@@ -38,7 +38,9 @@ En développement local, essayer :
 - `operator@authstarter.local`
 - `authstarter-local-password`
 
-Si les identifiants stockés en base ont été changés, l'utilisateur break-glass configuré fonctionne seulement quand `AUTH_STARTER_BASELINE_AUTH_BREAK_GLASS_ENABLED=true`.
+Ces identifiants sont local-only et nécessitent le profil `local`/`dev` ou Docker Compose. L'authentification break-glass est désactivée par défaut dans `application.yml` ; les utilisateurs break-glass configurés fonctionnent seulement quand `AUTH_STARTER_BASELINE_AUTH_BREAK_GLASS_ENABLED=true`.
+
+Si des tentatives publiques répétées échouent avec une erreur de rate limit, attendre l'expiration de la fenêtre courante. Les déploiements de production doivent utiliser un limiter distribué comme Redis au lieu du limiter en mémoire intégré.
 
 ## Page Admin Inaccessible
 

@@ -47,4 +47,4 @@ The current role enum is:
 - `ORG_ADMIN`
 - `USER`
 
-Admin routes and GraphQL operations require `SUPERADMIN` or `ORG_ADMIN`; assigning `SUPERADMIN` is restricted to an existing `SUPERADMIN`.
+Admin routes and GraphQL operations require `SUPERADMIN` or `ORG_ADMIN`. Only `SUPERADMIN` can assign or modify `SUPERADMIN`; `ORG_ADMIN` cannot modify `SUPERADMIN` users, cannot change its own role/status, and cannot assign `ORG_ADMIN` unless the backend policy explicitly allows it.

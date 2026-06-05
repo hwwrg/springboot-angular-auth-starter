@@ -19,7 +19,7 @@ docker compose up --build
 
 这会启动：
 
-- `postgres`，host port `5432`
+- `postgres`，`127.0.0.1:5432`
 - `backend`，host port `8080`
 
 当前 Compose 文件会直接设置本地后端变量。[../../.env.example](../../.env.example) 是可配置项的参考。
@@ -54,9 +54,13 @@ cd backend
 
 ## 本地登录
 
+这些是 local-only 演示凭据。它们由 `local` profile 和 Docker Compose 启用，不应在部署环境中使用。
+
 - `operator@authstarter.local` / `authstarter-local-password` / `SUPERADMIN`
 - `org-admin@authstarter.local` / `authstarter-local-password` / `ORG_ADMIN`
 - `user@authstarter.local` / `authstarter-local-password` / `USER`
+
+Break-glass 认证在 `application.yml` 中默认关闭；本地配置只为这些演示用户显式启用它。
 
 ## 常用检查
 

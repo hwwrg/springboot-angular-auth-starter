@@ -26,7 +26,7 @@ Le projet fournit une base pratique pour l'authentification, l'autorisation, la 
 
 ## Stack Technique
 
-- Backend : Java 21, Spring Boot 3.5.10, Spring Security, Spring GraphQL, JDBC, Flyway
+- Backend : Java 21, Spring Boot 3.5.14, Spring Security, Spring GraphQL, JDBC, Flyway
 - Base de données : PostgreSQL 16 dans Docker Compose local
 - Frontend : Angular 20.2, Apollo Angular, RxJS, lucide-angular
 - Outils : Gradle wrapper, Node 22.14.0, pnpm 10.6.5, Docker Compose
@@ -62,9 +62,15 @@ Par défaut, PostgreSQL doit être disponible sur `jdbc:postgresql://localhost:5
 
 ## Utilisateurs Locaux Par Défaut
 
+Ces identifiants sont des identifiants de démonstration local-only fournis par les profils `local`/`dev` et Docker Compose. Ne pas les utiliser dans un environnement déployé.
+
 - `operator@authstarter.local` / `authstarter-local-password` / `SUPERADMIN`
 - `org-admin@authstarter.local` / `authstarter-local-password` / `ORG_ADMIN`
 - `user@authstarter.local` / `authstarter-local-password` / `USER`
+
+L'authentification break-glass est désactivée par défaut dans [application.yml](./backend/src/main/resources/application.yml). Le profil local et Docker Compose l'activent explicitement uniquement pour la démonstration locale.
+
+Les mutations publiques d'authentification utilisent un rate limiter basique en mémoire. En production ou avec plusieurs instances, le remplacer ou l'appuyer sur un stockage distribué comme Redis.
 
 ## Aperçu API
 

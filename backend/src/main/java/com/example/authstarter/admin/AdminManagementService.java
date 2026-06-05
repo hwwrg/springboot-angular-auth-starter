@@ -68,6 +68,7 @@ class JdbcAdminManagementService implements AdminManagementService {
     private final NotificationService notificationService;
     private final UserInvitationService userInvitationService;
     private final InvitationPasswordSetupUrlBuilder invitationPasswordSetupUrlBuilder;
+    private final AdminAuthorizationPolicy authorizationPolicy = new AdminAuthorizationPolicy();
 
     JdbcAdminManagementService(
             CurrentUserContextService currentUserContextService,
@@ -98,7 +99,8 @@ class JdbcAdminManagementService implements AdminManagementService {
     @Transactional
     public AdminUserSummaryPayload createUser(AuthPrincipal principal, CreateAdminUserInput input) {
         OrganizationContextPayload organization = requireCurrentOrganization(principal);
-        ValidatedUserInput validated = validateCreateInput(principal, input);
+        ValidatedUserInput validated = validateCreateInput(input);
+        authorizationPolicy.authorizeCreate(principal, validated.role());
         if (findUserIdByEmail(validated.email()) != null) {
             throw new IllegalArgumentException("User email already exists.");
         }
@@ -156,8 +158,15 @@ class JdbcAdminManagementService implements AdminManagementService {
     public AdminUserSummaryPayload updateUser(AuthPrincipal principal, UpdateAdminUserInput input) {
         OrganizationContextPayload organization = requireCurrentOrganization(principal);
         UUID userId = parseRequiredUuid(input == null ? null : input.id(), "User id");
-        ValidatedUserUpdateInput validated = validateUpdateInput(principal, input);
-        requireUser(organization, userId);
+        AdminUserSummaryPayload existing = requireUser(organization, userId);
+        ValidatedUserUpdateInput validated = validateUpdateInput(input);
+        authorizationPolicy.authorizeUpdate(
+                principal,
+                userId,
+                existing,
+                validated.role(),
+                validated.userStatus(),
+                validated.membershipStatus());
 
         int updatedUserRows = jdbcClient.sql("""
                         update app_users u
@@ -289,39 +298,33 @@ class JdbcAdminManagementService implements AdminManagementService {
                 .orElseThrow(() -> new AccessDeniedException("An active organization context is required."));
     }
 
-    private ValidatedUserInput validateCreateInput(AuthPrincipal principal, CreateAdminUserInput input) {
+    private ValidatedUserInput validateCreateInput(CreateAdminUserInput input) {
         if (input == null) {
             throw new IllegalArgumentException("User input is required.");
         }
-        String role = requireRole(principal, input.role());
         return new ValidatedUserInput(
                 requireEmail(input.email()),
                 requireText("Display name", input.displayName(), 160),
                 requireAllowed("User status", input.userStatus(), USER_CREATE_STATUSES),
-                role,
+                requireRole(input.role()),
                 requireAllowed("Membership status", input.membershipStatus(), MEMBERSHIP_CREATE_STATUSES),
                 Boolean.TRUE.equals(input.primaryMembership()));
     }
 
-    private ValidatedUserUpdateInput validateUpdateInput(AuthPrincipal principal, UpdateAdminUserInput input) {
+    private ValidatedUserUpdateInput validateUpdateInput(UpdateAdminUserInput input) {
         if (input == null) {
             throw new IllegalArgumentException("User input is required.");
         }
-        String role = requireRole(principal, input.role());
         return new ValidatedUserUpdateInput(
                 requireText("Display name", input.displayName(), 160),
                 requireAllowed("User status", input.userStatus(), USER_STATUSES),
-                role,
+                requireRole(input.role()),
                 requireAllowed("Membership status", input.membershipStatus(), MEMBERSHIP_STATUSES),
                 Boolean.TRUE.equals(input.primaryMembership()));
     }
 
-    private String requireRole(AuthPrincipal principal, String value) {
-        String role = requireAllowed("Role", value, USER_ROLES);
-        if ("SUPERADMIN".equals(role) && !principal.roles().contains("SUPERADMIN")) {
-            throw new AccessDeniedException("Only a SUPERADMIN can assign the SUPERADMIN role.");
-        }
-        return role;
+    private String requireRole(String value) {
+        return requireAllowed("Role", value, USER_ROLES);
     }
 
     private String requireEmail(String value) {

@@ -9,10 +9,11 @@ RUN ./gradlew bootJar --no-daemon
 FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl \
-    && rm -rf /var/lib/apt/lists/*
+RUN groupadd --system authstarter \
+    && useradd --system --gid authstarter --home-dir /app --shell /usr/sbin/nologin authstarter
 COPY --from=build /workspace/build/libs/*.jar /app/springboot-angular-auth-starter-backend.jar
+RUN chown -R authstarter:authstarter /app
+USER authstarter
 
 EXPOSE 8080
 ENTRYPOINT ["sh", "-c", "java -jar /app/springboot-angular-auth-starter-backend.jar --spring.profiles.active=${SPRING_PROFILES_ACTIVE:-local}"]

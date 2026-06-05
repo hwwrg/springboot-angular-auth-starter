@@ -18,6 +18,12 @@ management:
 authstarter:
   auth:
     baseline:
+      # Local-only demo break-glass credentials. Do not use in deployed environments.
+      username: operator@authstarter.local
+      password: authstarter-local-password
+      display-name: Baseline Operator
+      role: SUPERADMIN
+      break-glass-enabled: true
       additional-users:
         - email: org-admin@authstarter.local
           password: authstarter-local-password

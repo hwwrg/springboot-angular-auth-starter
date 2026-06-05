@@ -38,7 +38,9 @@ For local development, try:
 - `operator@authstarter.local`
 - `authstarter-local-password`
 
-If DB-backed credentials were changed, the configured break-glass user only works when `AUTH_STARTER_BASELINE_AUTH_BREAK_GLASS_ENABLED=true`.
+These credentials are local-only and require the `local`/`dev` profile or Docker Compose. Break-glass authentication is disabled by default in `application.yml`; configured break-glass users work only when `AUTH_STARTER_BASELINE_AUTH_BREAK_GLASS_ENABLED=true`.
+
+If repeated public auth attempts fail with a rate-limit error, wait for the current window to expire. Production deployments should use a distributed limiter such as Redis instead of the built-in in-memory limiter.
 
 ## Admin Page Is Not Accessible
 

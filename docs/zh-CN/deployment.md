@@ -8,6 +8,8 @@
 
 [../../backend/Dockerfile](../../backend/Dockerfile) 使用 Java 21 构建 Spring Boot jar，然后在 Java 21 JRE image 中运行。容器暴露端口 `8080`。
 
+运行时镜像使用非 root 用户运行，并且不安装 curl 或其他额外运行时工具。
+
 入口命令运行：
 
 ```sh
@@ -40,6 +42,10 @@ java -jar /app/springboot-angular-auth-starter-backend.jar --spring.profiles.act
 
 部署前查看 [../../.env.example](../../.env.example) 和 [../../backend/src/main/resources/application.yml](../../backend/src/main/resources/application.yml)。
 
+Break-glass 认证默认关闭。不要部署 `application-local.yml`、`application-dev.yml`、`.env.example` 或 Docker Compose 中的本地演示凭据。
+
+公开认证 mutations 包含基础的内存 rate limiter。生产或多实例部署应替换为或接入 Redis 等分布式存储。
+
 ## 前端构建
 
 构建 Angular app：
@@ -55,5 +61,7 @@ npx -y pnpm@10.6.5 build
 ## 本地 Compose 范围
 
 [../../docker-compose.yml](../../docker-compose.yml) 用于本地开发，启动 PostgreSQL 和后端。它不是生产部署模板。
+
+Compose 的 PostgreSQL 端口为本地使用绑定到 `127.0.0.1:5432`。
 
 部署到真实系统前，请检查 cookie security、HTTPS、CORS origins、SMTP、password policy、monitoring、backup、retention 和 operational access。

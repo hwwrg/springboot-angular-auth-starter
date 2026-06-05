@@ -26,7 +26,7 @@
 
 ## 技术栈
 
-- 后端：Java 21、Spring Boot 3.5.10、Spring Security、Spring GraphQL、JDBC、Flyway
+- 后端：Java 21、Spring Boot 3.5.14、Spring Security、Spring GraphQL、JDBC、Flyway
 - 数据库：本地 Docker Compose 中的 PostgreSQL 16
 - 前端：Angular 20.2、Apollo Angular、RxJS、lucide-angular
 - 工具：Gradle wrapper、Node 22.14.0、pnpm 10.6.5、Docker Compose
@@ -62,9 +62,15 @@ cd backend
 
 ## 默认本地用户
 
+这些是 `local`/`dev` profiles 和 Docker Compose 提供的 local-only 演示凭据。不要在部署环境中使用它们。
+
 - `operator@authstarter.local` / `authstarter-local-password` / `SUPERADMIN`
 - `org-admin@authstarter.local` / `authstarter-local-password` / `ORG_ADMIN`
 - `user@authstarter.local` / `authstarter-local-password` / `USER`
+
+Break-glass 认证在 [application.yml](./backend/src/main/resources/application.yml) 中默认关闭。local profile 和 Docker Compose 只为本地演示显式启用它。
+
+公开认证 mutations 使用基础的内存 rate limiter。生产或多实例部署应改用或接入 Redis 等分布式存储。
 
 ## API 概览
 

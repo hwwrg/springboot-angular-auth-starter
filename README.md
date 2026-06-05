@@ -26,7 +26,7 @@ This project provides a practical baseline for authentication, authorization, us
 
 ## Tech Stack
 
-- Backend: Java 21, Spring Boot 3.5.10, Spring Security, Spring GraphQL, JDBC, Flyway
+- Backend: Java 21, Spring Boot 3.5.14, Spring Security, Spring GraphQL, JDBC, Flyway
 - Database: PostgreSQL 16 in local Docker Compose
 - Frontend: Angular 20.2, Apollo Angular, RxJS, lucide-angular
 - Tooling: Gradle wrapper, Node 22.14.0, pnpm 10.6.5, Docker Compose
@@ -73,6 +73,8 @@ This expects PostgreSQL at `jdbc:postgresql://localhost:5432/authstarter` unless
 
 ## Default Local Users
 
+These are local-only demo credentials from the `local`/`dev` profiles and Docker Compose. Do not use them in deployed environments.
+
 Baseline local login:
 
 - `operator@authstarter.local`
@@ -83,6 +85,8 @@ Additional local users in [application-local.yml](./backend/src/main/resources/a
 
 - `org-admin@authstarter.local` / `authstarter-local-password` / `ORG_ADMIN`
 - `user@authstarter.local` / `authstarter-local-password` / `USER`
+
+Break-glass authentication is disabled by default in [application.yml](./backend/src/main/resources/application.yml). The local profile and Docker Compose explicitly enable it only for local demo use.
 
 ## API Overview
 
@@ -144,6 +148,8 @@ Important backend variables:
 - `AUTH_STARTER_SMTP_PORT`
 
 Use `AUTH_STARTER_NOTIFICATION_EMAIL_PROVIDER=local-mock` for local development without a mail server. Use `smtp` with the SMTP variables in [.env.example](./.env.example) for a local mail catcher or SMTP service.
+
+Public auth mutations have a basic in-memory rate limiter. For production or multi-instance deployments, replace or back it with distributed storage such as Redis.
 
 The frontend development environment points to:
 

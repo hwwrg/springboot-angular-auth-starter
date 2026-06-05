@@ -25,12 +25,26 @@ Other GraphQL operations require an authenticated session.
 
 ## Login Sources
 
-`BaselineAuthService` first tries DB-backed credentials when `UserCredentialAuthenticationService` is available. If that fails or no persisted credential matches, configured break-glass users can authenticate when `AUTH_STARTER_BASELINE_AUTH_BREAK_GLASS_ENABLED=true`.
+`BaselineAuthService` first tries DB-backed credentials when `UserCredentialAuthenticationService` is available. If that fails or no persisted credential matches, configured break-glass users can authenticate only when `AUTH_STARTER_BASELINE_AUTH_BREAK_GLASS_ENABLED=true`.
 
-Local configured users come from:
+Break-glass authentication is disabled by default in [application.yml](../../backend/src/main/resources/application.yml), and that file does not provide production-capable baseline username or password defaults. Local demo credentials are defined only in local development configuration:
 
-- [application.yml](../../backend/src/main/resources/application.yml)
 - [application-local.yml](../../backend/src/main/resources/application-local.yml)
+- [application-dev.yml](../../backend/src/main/resources/application-dev.yml)
+- [docker-compose.yml](../../docker-compose.yml)
+
+Do not use the local demo credentials in deployed environments.
+
+## Rate Limiting
+
+Public auth mutations use a basic in-memory fixed-window rate limiter:
+
+- `login`
+- `requestPasswordReset`
+- `resetPassword`
+- `acceptUserInvite`
+
+This is starter-friendly protection for a single backend process. Production and multi-instance deployments should replace or back it with distributed storage such as Redis.
 
 ## RBAC
 
@@ -40,7 +54,7 @@ Roles are represented by `AuthStarterRole`:
 - `ORG_ADMIN`
 - `USER`
 
-The Angular admin route uses `roleAccessGuard`. Backend admin management checks the authenticated principal and current organization context.
+The Angular admin route uses `roleAccessGuard`. Backend admin management checks the authenticated principal and current organization context. Only `SUPERADMIN` can assign or modify `SUPERADMIN`; `ORG_ADMIN` cannot modify `SUPERADMIN` users, cannot change its own role/status, and cannot assign `ORG_ADMIN` unless the backend policy explicitly allows it.
 
 ## Invitation and Password Reset
 

@@ -19,7 +19,12 @@ import org.springframework.test.web.servlet.MvcResult;
 
 @SpringBootTest(
         properties = {
-                "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration"
+                "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration",
+                "authstarter.auth.baseline.username=operator@authstarter.local",
+                "authstarter.auth.baseline.password=authstarter-local-password",
+                "authstarter.auth.baseline.display-name=Baseline Operator",
+                "authstarter.auth.baseline.role=SUPERADMIN",
+                "authstarter.auth.baseline.break-glass-enabled=true"
         })
 @AutoConfigureMockMvc
 class GraphQlEndpointSecurityTests {
