@@ -1,22 +1,34 @@
 # Spring Boot Angular Auth Starter
 
-Reusable open-source starter for a Spring Boot GraphQL authentication backend and Angular authentication frontend.
+Reusable open-source starter for a Spring Boot authentication backend and Angular authentication frontend. It uses session-based authentication, CSRF protection, and RBAC as the default full-stack integration model.
+
+## Why this project exists
+
+This project was extracted from a production-proven authentication and user-management foundation and generalized into a reusable open-source starter.
+
+The goal is to help teams bootstrap enterprise-grade authentication, authorization, invitation, and password-management workflows using Spring Boot and Angular.
+
+It focuses on practical backend/frontend integration patterns rather than being a minimal demo.
 
 ## Purpose
 
-This project provides a reusable full-stack baseline for session-based authentication, RBAC, user lifecycle management, invitations, password reset, and account notification history.
+This project provides a reusable full-stack baseline for authentication, authorization, user lifecycle management, invitations, password setup and reset, and account notification history.
 
 ## Features
 
-- Spring Boot GraphQL API with CSRF-protected server-side sessions
-- Role model: `SUPERADMIN`, `ORG_ADMIN`, `USER`
+- Spring Boot backend with Spring Security, Spring GraphQL, JDBC, and Flyway
+- Angular frontend with login, logout, route guards, account page, user management, and notification history
+- Session-based authentication with server-side sessions
+- CSRF protection for authenticated backend requests
+- RBAC role model: `SUPERADMIN`, `ORG_ADMIN`, `USER`
 - Current user, organization context, and membership queries
 - User management for admin roles
-- Invite user flow with hashed single-use tokens
-- First-login/password setup through invitation links
-- Forgot password and reset password flow with hashed tokens
-- Local mock or generic SMTP email notification provider and notification history
-- Angular shell with login, logout, route guards, account page, user management, and notification history
+- Invitation flow with hashed single-use tokens
+- First-login password setup through invitation links
+- Forgot password request flow
+- Password reset flow with hashed tokens
+- Notification framework with local mock or generic SMTP email providers and notification history
+- Docker local development setup with PostgreSQL and the backend through Docker Compose
 
 ## Tech Stack
 
