@@ -2,16 +2,16 @@
 
 # 入门
 
-## Prerequisites
+## 前置要求
 
 - Java 21
 - Node 22.14.0
 - pnpm 10.6.5，或 `npx -y pnpm@10.6.5`
-- 本地 PostgreSQL/backend 路径需要 Docker Compose
+- 使用本地 PostgreSQL 和后端路径时需要 Docker Compose
 
 ## 使用 Docker Compose 运行
 
-在 repository root：
+在仓库根目录运行：
 
 ```sh
 docker compose up --build
@@ -22,11 +22,11 @@ docker compose up --build
 - `postgres`，host port `5432`
 - `backend`，host port `8080`
 
-当前 Compose 文件直接设置 local backend variables。[../../.env.example](../../.env.example) 是 configurable values 的参考。
+当前 Compose 文件会直接设置本地后端变量。[../../.env.example](../../.env.example) 是可配置项的参考。
 
-## 运行 Frontend
+## 运行前端
 
-在第二个 terminal：
+在第二个终端运行：
 
 ```sh
 cd frontend
@@ -36,12 +36,12 @@ npx -y pnpm@10.6.5 start
 
 打开 `http://localhost:4200`。
 
-Frontend development config 使用：
+前端开发配置使用：
 
 - `backendBaseUrl`: `http://localhost:8080`
 - `graphql.endpoint`: `http://localhost:8080/graphql`
 
-## 不使用 Docker 运行 Backend
+## 不使用 Docker 运行后端
 
 先启动本地 PostgreSQL，并将 database、username、password 都设为 `authstarter`，然后运行：
 
@@ -68,7 +68,7 @@ cd frontend && npx -y pnpm@10.6.5 test
 cd frontend && npx -y pnpm@10.6.5 build
 ```
 
-Repository root 也提供：
+仓库根目录也提供：
 
 ```sh
 make verify

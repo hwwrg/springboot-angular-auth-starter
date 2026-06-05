@@ -1,12 +1,12 @@
-[Index documentation](./README.md)
+[Index de la documentation](./README.md)
 
-# Deployment
+# Déploiement
 
-Ce repository contient un local development Compose setup et un backend Dockerfile. Il ne contient pas encore de production infrastructure ni de frontend container image séparée.
+Ce dépôt contient une configuration Compose pour le développement local et un Dockerfile backend. Il ne contient pas encore d'infrastructure de production ni d'image de conteneur frontend séparée.
 
-## Backend Image
+## Image Backend
 
-[../../backend/Dockerfile](../../backend/Dockerfile) construit le Spring Boot jar avec Java 21, puis l'exécute sur une Java 21 JRE image. Le container expose le port `8080`.
+[../../backend/Dockerfile](../../backend/Dockerfile) construit le Spring Boot jar avec Java 21, puis l'exécute sur une Java 21 JRE image. Le conteneur expose le port `8080`.
 
 L'entrypoint exécute :
 
@@ -14,9 +14,9 @@ L'entrypoint exécute :
 java -jar /app/springboot-angular-auth-starter-backend.jar --spring.profiles.active=${SPRING_PROFILES_ACTIVE:-local}
 ```
 
-Définir `SPRING_PROFILES_ACTIVE` explicitement hors local development.
+Définir `SPRING_PROFILES_ACTIVE` explicitement hors développement local.
 
-## Backend Runtime Configuration
+## Configuration Runtime du Backend
 
 Configurer au minimum :
 
@@ -29,7 +29,7 @@ Configurer au minimum :
 - `AUTH_STARTER_BASELINE_AUTH_BREAK_GLASS_ENABLED`
 - `AUTH_STARTER_NOTIFICATION_EMAIL_PROVIDER`
 
-Pour SMTP delivery, configurer aussi :
+Pour la livraison SMTP, configurer aussi :
 
 - `AUTH_STARTER_SMTP_HOST`
 - `AUTH_STARTER_SMTP_PORT`
@@ -40,7 +40,7 @@ Pour SMTP delivery, configurer aussi :
 
 Relire [../../.env.example](../../.env.example) et [../../backend/src/main/resources/application.yml](../../backend/src/main/resources/application.yml) avant de déployer.
 
-## Frontend Build
+## Build Frontend
 
 Construire l'Angular app :
 
@@ -50,10 +50,10 @@ npx -y pnpm@10.6.5 install --frozen-lockfile
 npx -y pnpm@10.6.5 build
 ```
 
-La development environment pointe actuellement vers `http://localhost:8080`. `RuntimeConfigService` contient le support runtime config, et [../../frontend/public/config.template.json](../../frontend/public/config.template.json) montre l'expected shape, mais un environment file doit définir `runtimeConfigPath` pour que l'app charge une remote runtime config.
+L'environnement de développement pointe actuellement vers `http://localhost:8080`. `RuntimeConfigService` contient le support runtime config, et [../../frontend/public/config.template.json](../../frontend/public/config.template.json) montre le format attendu, mais un fichier d'environnement doit définir `runtimeConfigPath` pour que l'application charge une runtime config distante.
 
-## Local Compose Scope
+## Portée du Compose Local
 
-[../../docker-compose.yml](../../docker-compose.yml) démarre PostgreSQL et le backend pour local development. Ce n'est pas un production deployment template.
+[../../docker-compose.yml](../../docker-compose.yml) démarre PostgreSQL et le backend pour le développement local. Ce n'est pas un modèle de déploiement en production.
 
 Avant d'utiliser ce starter dans un système déployé, vérifier cookie security, HTTPS, CORS origins, SMTP, password policy, monitoring, backup, retention et operational access.

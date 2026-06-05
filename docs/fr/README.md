@@ -2,21 +2,21 @@
 
 # Documentation
 
-Ce répertoire contient la documentation détaillée pour [../../README.fr.md](../../README.fr.md). Le fichier anglais [../../README.md](../../README.md) reste la primary source of truth.
+Ce répertoire contient la documentation détaillée correspondant à [../../README.fr.md](../../README.fr.md). Le fichier anglais [../../README.md](../../README.md) reste la référence officielle de la documentation.
 
 ## Guides
 
 - [Démarrage](./getting-started.md)
 - [Architecture](./architecture.md)
-- [Authentication](./authentication.md)
-- [Deployment](./deployment.md)
-- [Troubleshooting](./troubleshooting.md)
+- [Authentification](./authentication.md)
+- [Déploiement](./deployment.md)
+- [Dépannage](./troubleshooting.md)
 
-## Repository References
+## Références du Dépôt
 
-- [Backend README](../../backend/README.md)
-- [Frontend README](../../frontend/README.md)
+- [README backend](../../backend/README.md)
+- [README frontend](../../frontend/README.md)
 - [GraphQL schema](../../backend/src/main/resources/graphql/schema.graphqls)
 - [Docker Compose](../../docker-compose.yml)
-- [Environment example](../../.env.example)
-- [Documentation maintenance](../documentation-maintenance.md)
+- [Exemple d'environnement](../../.env.example)
+- [Maintenance de la documentation](../documentation-maintenance.md)

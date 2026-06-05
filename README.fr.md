@@ -2,34 +2,34 @@
 
 # Spring Boot Angular Auth Starter
 
-> This file is a French translation of [README.md](./README.md). The English README is the source of truth.
+> Ce fichier est la traduction française de [README.md](./README.md) ; le README anglais reste la référence officielle de la documentation.
 
-Ce projet est un starter open source réutilisable avec un Spring Boot authentication backend et un Angular authentication frontend. Le modèle d'intégration par défaut utilise server-side sessions, CSRF protection, PostgreSQL persistence, GraphQL et role-based access control.
+Ce projet est un starter open source réutilisable avec un backend d'authentification Spring Boot et un frontend d'authentification Angular. Le modèle d'intégration par défaut utilise des sessions côté serveur, une protection CSRF, une persistance PostgreSQL, GraphQL et un contrôle d'accès par rôles.
 
 ## Objectif
 
-Le projet fournit une base pratique pour authentication, authorization, user lifecycle management, invitations, password setup/reset et account notification history. C'est un starter, pas une identity platform complète prête pour production.
+Le projet fournit une base pratique pour l'authentification, l'autorisation, la gestion du cycle de vie des utilisateurs, les invitations, la configuration et la réinitialisation des mots de passe, ainsi que l'historique des notifications de compte. C'est un starter, pas une plateforme d'identité complète déjà déployée.
 
 ## Fonctionnalités
 
-- Spring Boot backend avec Spring Security, Spring GraphQL, JDBC, Flyway et PostgreSQL
-- Angular frontend avec login, logout, session bootstrap, route guards, account page, user management et notification history
-- Server-side session authentication avec le cookie `AUTH_STARTER_SESSION`
-- CSRF bootstrap via `GET /auth/csrf` et header `X-XSRF-TOKEN` pour les unsafe requests
-- RBAC roles : `SUPERADMIN`, `ORG_ADMIN`, `USER`
-- Current user, organization context, workspace et membership queries
-- Admin user creation/update pour `SUPERADMIN` et `ORG_ADMIN`
-- Invitation flow et first-login password setup avec hashed single-use tokens
-- Forgot password et password reset flows
-- Notification event history avec providers email `local-mock` ou `smtp`
-- Local Docker Compose setup pour PostgreSQL et le backend
+- Backend Spring Boot avec Spring Security, Spring GraphQL, JDBC, Flyway et PostgreSQL
+- Frontend Angular avec login, logout, session bootstrap, route guards, account page, user management et notification history
+- Authentification par session côté serveur avec le cookie `AUTH_STARTER_SESSION`
+- Initialisation CSRF via `GET /auth/csrf` et header `X-XSRF-TOKEN` pour les requêtes non sûres
+- Rôles RBAC : `SUPERADMIN`, `ORG_ADMIN`, `USER`
+- Requêtes de current user, organization context, workspace et membership
+- Création et mise à jour d'admin users par `SUPERADMIN` et `ORG_ADMIN`
+- Invitation flow et first-login password setup avec des tokens à usage unique hashés
+- Flux forgot password et password reset
+- Historique des notification events avec les fournisseurs email `local-mock` ou `smtp`
+- Configuration Docker Compose locale pour PostgreSQL et le backend
 
 ## Stack Technique
 
 - Backend : Java 21, Spring Boot 3.5.10, Spring Security, Spring GraphQL, JDBC, Flyway
-- Database : PostgreSQL 16 dans local Docker Compose
+- Base de données : PostgreSQL 16 dans Docker Compose local
 - Frontend : Angular 20.2, Apollo Angular, RxJS, lucide-angular
-- Tooling : Gradle wrapper, Node 22.14.0, pnpm 10.6.5, Docker Compose
+- Outils : Gradle wrapper, Node 22.14.0, pnpm 10.6.5, Docker Compose
 
 ## Installation Locale
 
@@ -39,7 +39,7 @@ Démarrer PostgreSQL et le backend :
 docker compose up --build
 ```
 
-Le backend écoute sur `http://localhost:8080`. Le fichier [docker-compose.yml](./docker-compose.yml) fournit directement les local backend environment values ; [.env.example](./.env.example) sert de référence pour les variables configurables.
+Le backend écoute sur `http://localhost:8080`. Le fichier [docker-compose.yml](./docker-compose.yml) fournit directement les variables d'environnement locales du backend ; [.env.example](./.env.example) sert de référence pour les variables configurables.
 
 Démarrer le frontend séparément :
 
@@ -68,11 +68,11 @@ Par défaut, PostgreSQL doit être disponible sur `jdbc:postgresql://localhost:5
 
 ## Aperçu API
 
-- GraphQL endpoint : `POST /graphql`
-- CSRF endpoint : `GET /auth/csrf`
-- Health endpoints : `GET /actuator/health`, `GET /actuator/health/liveness`, `GET /actuator/health/readiness`
+- Point d'entrée GraphQL : `POST /graphql`
+- Point d'entrée CSRF : `GET /auth/csrf`
+- Points d'entrée de santé : `GET /actuator/health`, `GET /actuator/health/liveness`, `GET /actuator/health/readiness`
 
-Public GraphQL operations :
+Opérations GraphQL publiques :
 
 - `readiness`
 - `currentSession`
@@ -82,7 +82,7 @@ Public GraphQL operations :
 - `requestPasswordReset`
 - `resetPassword`
 
-Authenticated operations :
+Opérations nécessitant une authentification :
 
 - `currentUserProfile`
 - `currentOrganizationContext`
@@ -91,7 +91,7 @@ Authenticated operations :
 - `notificationEvents`
 - `changeOwnPassword`
 
-Admin operations nécessitant `SUPERADMIN` ou `ORG_ADMIN` :
+Opérations d'administration nécessitant `SUPERADMIN` ou `ORG_ADMIN` :
 
 - `adminManagementBaseline`
 - `adminCreateUser`
@@ -109,7 +109,7 @@ cd frontend && npx -y pnpm@10.6.5 test
 cd frontend && npx -y pnpm@10.6.5 build
 ```
 
-Ou depuis la racine du repository :
+Ou depuis la racine du dépôt :
 
 ```sh
 make verify
@@ -119,10 +119,10 @@ make verify
 
 - [Démarrage](./docs/fr/getting-started.md)
 - [Architecture](./docs/fr/architecture.md)
-- [Authentication](./docs/fr/authentication.md)
-- [Deployment](./docs/fr/deployment.md)
-- [Troubleshooting](./docs/fr/troubleshooting.md)
-- [Documentation maintenance](./docs/documentation-maintenance.md)
+- [Authentification](./docs/fr/authentication.md)
+- [Déploiement](./docs/fr/deployment.md)
+- [Dépannage](./docs/fr/troubleshooting.md)
+- [Maintenance de la documentation](./docs/documentation-maintenance.md)
 
 ## License
 

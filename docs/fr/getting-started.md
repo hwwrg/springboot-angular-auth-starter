@@ -1,8 +1,8 @@
-[Index documentation](./README.md)
+[Index de la documentation](./README.md)
 
 # Démarrage
 
-## Prerequisites
+## Prérequis
 
 - Java 21
 - Node 22.14.0
@@ -11,7 +11,7 @@
 
 ## Lancer avec Docker Compose
 
-Depuis la racine du repository :
+Depuis la racine du dépôt :
 
 ```sh
 docker compose up --build
@@ -22,7 +22,7 @@ Cela démarre :
 - `postgres` sur le host port `5432`
 - `backend` sur le host port `8080`
 
-Le fichier Compose courant définit directement les local backend variables. [../../.env.example](../../.env.example) sert de référence pour les configurable values.
+Le fichier Compose courant définit directement les variables locales du backend. [../../.env.example](../../.env.example) sert de référence pour les valeurs configurables.
 
 ## Lancer le Frontend
 
@@ -36,7 +36,7 @@ npx -y pnpm@10.6.5 start
 
 Ouvrir `http://localhost:4200`.
 
-La frontend development config utilise :
+La configuration frontend de développement utilise :
 
 - `backendBaseUrl`: `http://localhost:8080`
 - `graphql.endpoint`: `http://localhost:8080/graphql`
@@ -68,7 +68,7 @@ cd frontend && npx -y pnpm@10.6.5 test
 cd frontend && npx -y pnpm@10.6.5 build
 ```
 
-La racine du repository fournit aussi :
+La racine du dépôt fournit aussi :
 
 ```sh
 make verify
