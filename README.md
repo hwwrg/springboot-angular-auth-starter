@@ -89,6 +89,20 @@ Additional local users in [application-local.yml](./backend/src/main/resources/a
 
 Break-glass authentication is disabled by default in [application.yml](./backend/src/main/resources/application.yml). The local profile and Docker Compose explicitly enable it only for local demo use.
 
+
+## API Documentation
+
+The backend includes OpenAPI/Swagger documentation for REST support endpoints and uses the GraphQL schema as the contract for authentication, RBAC, user-management, invitation, password-reset, and notification operations.
+
+Start the backend locally, then open:
+
+- Swagger UI: `http://localhost:8080/swagger-ui.html`
+- OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+- OpenAPI YAML: `http://localhost:8080/v3/api-docs.yaml`
+- GraphQL endpoint: `http://localhost:8080/graphql`
+
+Typical browser clients first fetch `GET /auth/csrf`, then call `POST /graphql` with the `X-XSRF-TOKEN` header and the `AUTH_STARTER_SESSION` cookie. See [API documentation](./docs/en/api-documentation.md) and [schema.graphqls](./backend/src/main/resources/graphql/schema.graphqls) for operation examples.
+
 ## API Overview
 
 GraphQL endpoint:
@@ -209,4 +223,4 @@ npx -y pnpm@10.6.5 run frontend:lint
 
 ## License
 
-MIT. See [LICENSE](./LICENSE).
+Apache-2.0. See [LICENSE](./LICENSE).

@@ -22,6 +22,15 @@ server:
         secure: ${AUTH_STARTER_SESSION_COOKIE_SECURE:true}
         same-site: ${AUTH_STARTER_SESSION_COOKIE_SAME_SITE:lax}
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+    display-request-duration: true
+
 management:
   endpoints:
     web:

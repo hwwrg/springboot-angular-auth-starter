@@ -51,7 +51,11 @@ public class SecurityConfiguration {
                                 "/actuator/health/liveness",
                                 "/actuator/health/readiness",
                                 "/actuator/info",
-                                "/auth/csrf")
+                                "/auth/csrf",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs",
+                                "/v3/api-docs/**")
                         .permitAll()
                         .requestMatchers(HttpMethod.POST, "/graphql").permitAll()
                         .anyRequest().denyAll())
