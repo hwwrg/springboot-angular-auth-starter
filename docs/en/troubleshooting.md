@@ -38,11 +38,15 @@ For local development, try:
 - `operator@authstarter.local`
 - `authstarter-local-password`
 
-If DB-backed credentials were changed, the configured break-glass user only works when `AUTH_STARTER_BASELINE_AUTH_BREAK_GLASS_ENABLED=true`.
+These credentials are local-only and require the `local`/`dev` profile or Docker Compose. Break-glass authentication is disabled by default in `application.yml`; configured break-glass users work only when `AUTH_STARTER_BASELINE_AUTH_BREAK_GLASS_ENABLED=true`.
+
+If repeated public auth attempts fail with a rate-limit error, wait for the current window to expire. Production deployments should use a distributed limiter such as Redis instead of the built-in in-memory limiter.
+
+If GraphQL requests fail with depth, complexity, request body size, or introspection errors, check the `AUTH_STARTER_GRAPHQL_*` variables for the active profile. Local/dev enables introspection for developer tools; base deployed configuration disables it.
 
 ## Admin Page Is Not Accessible
 
-The frontend admin route and backend admin operations require `SUPERADMIN` or `ORG_ADMIN`. The `USER` role is redirected to the not-authorized page.
+The frontend admin route and backend admin operations require `SUPERADMIN` or `ORG_ADMIN` in the current organization context. The `USER` role is redirected to the not-authorized page.
 
 ## Email Is Not Delivered
 

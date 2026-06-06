@@ -18,7 +18,7 @@ Le projet fournit une base pratique pour l'authentification, l'autorisation, la 
 - Initialisation CSRF via `GET /auth/csrf` et header `X-XSRF-TOKEN` pour les requêtes non sûres
 - Rôles RBAC : `SUPERADMIN`, `ORG_ADMIN`, `USER`
 - Requêtes de current user, organization context, workspace et membership
-- Création et mise à jour d'admin users par `SUPERADMIN` et `ORG_ADMIN`
+- Création et mise à jour d'admin users par `SUPERADMIN` et `ORG_ADMIN` dans l'organisation courante
 - Invitation flow et first-login password setup avec des tokens à usage unique hashés
 - Flux forgot password et password reset
 - Historique des notification events avec les fournisseurs email `local-mock` ou `smtp`
@@ -26,7 +26,7 @@ Le projet fournit une base pratique pour l'authentification, l'autorisation, la 
 
 ## Stack Technique
 
-- Backend : Java 21, Spring Boot 3.5.10, Spring Security, Spring GraphQL, JDBC, Flyway
+- Backend : Java 21, Spring Boot 3.5.14, Spring Security, Spring GraphQL, JDBC, Flyway
 - Base de données : PostgreSQL 16 dans Docker Compose local
 - Frontend : Angular 20.2, Apollo Angular, RxJS, lucide-angular
 - Outils : Gradle wrapper, Node 22.14.0, pnpm 10.6.5, Docker Compose
@@ -39,7 +39,7 @@ Démarrer PostgreSQL et le backend :
 docker compose up --build
 ```
 
-Le backend écoute sur `http://localhost:8080`. Le fichier [docker-compose.yml](./docker-compose.yml) fournit directement les variables d'environnement locales du backend ; [.env.example](./.env.example) sert de référence pour les variables configurables.
+Le backend écoute sur `http://localhost:8080`. [docker-compose.yml](./docker-compose.yml) lie les ports backend et PostgreSQL à `127.0.0.1` et sert uniquement au développement local. Compose définit explicitement `SPRING_PROFILES_ACTIVE=local` pour les identifiants de démonstration ; l'image Docker backend elle-même n'active pas le profil local par défaut. [.env.example](./.env.example) contient des valeurs sûres par défaut ; [.env.local.example](./.env.local.example) contient les identifiants de démonstration local-only.
 
 Démarrer le frontend séparément :
 
@@ -62,9 +62,17 @@ Par défaut, PostgreSQL doit être disponible sur `jdbc:postgresql://localhost:5
 
 ## Utilisateurs Locaux Par Défaut
 
+Ces identifiants sont des identifiants de démonstration local-only fournis par les profils `local`/`dev` et Docker Compose. Ne pas les utiliser dans un environnement déployé.
+
 - `operator@authstarter.local` / `authstarter-local-password` / `SUPERADMIN`
 - `org-admin@authstarter.local` / `authstarter-local-password` / `ORG_ADMIN`
 - `user@authstarter.local` / `authstarter-local-password` / `USER`
+
+L'authentification break-glass est désactivée par défaut dans [application.yml](./backend/src/main/resources/application.yml). Le profil local et Docker Compose l'activent explicitement uniquement pour la démonstration locale.
+
+Les mutations publiques d'authentification utilisent un rate limiter basique en mémoire. En production ou avec plusieurs instances, le remplacer ou l'appuyer sur un stockage distribué comme Redis.
+
+GraphiQL est désactivé par défaut. L'introspection GraphQL est désactivée par défaut avec `AUTH_STARTER_GRAPHQL_INTROSPECTION_ENABLED=false` ; la configuration local/dev l'active pour le développement.
 
 ## Aperçu API
 
@@ -91,7 +99,7 @@ Opérations nécessitant une authentification :
 - `notificationEvents`
 - `changeOwnPassword`
 
-Opérations d'administration nécessitant `SUPERADMIN` ou `ORG_ADMIN` :
+Opérations d'administration nécessitant `SUPERADMIN` ou `ORG_ADMIN` dans l'organisation courante :
 
 - `adminManagementBaseline`
 - `adminCreateUser`

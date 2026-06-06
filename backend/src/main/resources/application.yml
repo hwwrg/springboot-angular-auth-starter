@@ -55,14 +55,19 @@ authstarter:
       url:
         base-url: ${AUTH_STARTER_PASSWORD_RESET_URL:${AUTH_STARTER_FRONTEND_ORIGIN:http://localhost:4200}/reset-password}
     baseline:
-      username: ${AUTH_STARTER_BASELINE_AUTH_USERNAME:operator@authstarter.local}
-      password: ${AUTH_STARTER_BASELINE_AUTH_PASSWORD:authstarter-local-password}
+      username: ${AUTH_STARTER_BASELINE_AUTH_USERNAME:}
+      password: ${AUTH_STARTER_BASELINE_AUTH_PASSWORD:}
       display-name: ${AUTH_STARTER_BASELINE_AUTH_DISPLAY_NAME:Baseline Operator}
-      role: ${AUTH_STARTER_BASELINE_AUTH_ROLE:SUPERADMIN}
-      break-glass-enabled: ${AUTH_STARTER_BASELINE_AUTH_BREAK_GLASS_ENABLED:true}
+      role: ${AUTH_STARTER_BASELINE_AUTH_ROLE:USER}
+      break-glass-enabled: ${AUTH_STARTER_BASELINE_AUTH_BREAK_GLASS_ENABLED:false}
   security:
     allowed-origins:
       - ${AUTH_STARTER_FRONTEND_ORIGIN:http://localhost:4200}
+  graphql:
+    max-query-depth: ${AUTH_STARTER_GRAPHQL_MAX_QUERY_DEPTH:12}
+    max-query-complexity: ${AUTH_STARTER_GRAPHQL_MAX_QUERY_COMPLEXITY:200}
+    max-request-bytes: ${AUTH_STARTER_GRAPHQL_MAX_REQUEST_BYTES:32768}
+    introspection-enabled: ${AUTH_STARTER_GRAPHQL_INTROSPECTION_ENABLED:false}
   notification:
     email:
       provider: ${AUTH_STARTER_NOTIFICATION_EMAIL_PROVIDER:local-mock}

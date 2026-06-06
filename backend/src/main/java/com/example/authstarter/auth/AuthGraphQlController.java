@@ -15,14 +15,17 @@ public class AuthGraphQlController {
     private final BaselineAuthService baselineAuthService;
     private final ObjectProvider<UserInvitationService> userInvitationService;
     private final ObjectProvider<PasswordResetService> passwordResetService;
+    private final PublicAuthRateLimiter rateLimiter;
 
     public AuthGraphQlController(
             BaselineAuthService baselineAuthService,
             ObjectProvider<UserInvitationService> userInvitationService,
-            ObjectProvider<PasswordResetService> passwordResetService) {
+            ObjectProvider<PasswordResetService> passwordResetService,
+            PublicAuthRateLimiter rateLimiter) {
         this.baselineAuthService = baselineAuthService;
         this.userInvitationService = userInvitationService;
         this.passwordResetService = passwordResetService;
+        this.rateLimiter = rateLimiter;
     }
 
     @QueryMapping
@@ -32,6 +35,7 @@ public class AuthGraphQlController {
 
     @MutationMapping
     public AuthSessionPayload login(@Argument @Valid LoginInput input) {
+        rateLimiter.checkEmail(PublicAuthRateLimiter.PublicAuthFlow.LOGIN, input == null ? null : input.email());
         return baselineAuthService.login(input);
     }
 
@@ -47,6 +51,7 @@ public class AuthGraphQlController {
 
     @MutationMapping
     public InvitationPasswordSetupPayload acceptUserInvite(@Argument @Valid AcceptUserInviteInput input) {
+        rateLimiter.checkToken(PublicAuthRateLimiter.PublicAuthFlow.ACCEPT_USER_INVITE, input == null ? null : input.token());
         return userInvitationService.stream()
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("User invitation is unavailable without auth persistence."))
@@ -55,6 +60,9 @@ public class AuthGraphQlController {
 
     @MutationMapping
     public PasswordResetPayload requestPasswordReset(@Argument @Valid PasswordResetRequestInput input) {
+        rateLimiter.checkEmail(
+                PublicAuthRateLimiter.PublicAuthFlow.REQUEST_PASSWORD_RESET,
+                input == null ? null : input.email());
         return passwordResetService.stream()
                 .findFirst()
                 .map(service -> service.requestReset(input))
@@ -64,6 +72,7 @@ public class AuthGraphQlController {
 
     @MutationMapping
     public PasswordResetPayload resetPassword(@Argument @Valid PasswordResetCompleteInput input) {
+        rateLimiter.checkToken(PublicAuthRateLimiter.PublicAuthFlow.RESET_PASSWORD, input == null ? null : input.token());
         return passwordResetService.stream()
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Password reset is unavailable without auth persistence."))

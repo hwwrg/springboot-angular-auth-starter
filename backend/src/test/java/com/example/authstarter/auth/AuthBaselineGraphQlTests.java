@@ -33,7 +33,8 @@ import jakarta.servlet.http.Cookie;
                 "authstarter.auth.baseline.additional-users[1].email=user@example.test",
                 "authstarter.auth.baseline.additional-users[1].password=test-password",
                 "authstarter.auth.baseline.additional-users[1].display-name=Test User",
-                "authstarter.auth.baseline.additional-users[1].role=USER"
+                "authstarter.auth.baseline.additional-users[1].role=USER",
+                "authstarter.auth.baseline.break-glass-enabled=true"
         })
 @AutoConfigureMockMvc
 class AuthBaselineGraphQlTests {

@@ -18,7 +18,7 @@ This project provides a practical baseline for authentication, authorization, us
 - CSRF bootstrap at `GET /auth/csrf` and `X-XSRF-TOKEN` headers for unsafe requests
 - RBAC roles: `SUPERADMIN`, `ORG_ADMIN`, `USER`
 - Current user, organization context, workspace, and membership queries
-- Admin user creation and updates for `SUPERADMIN` and `ORG_ADMIN`
+- Admin user creation and updates for `SUPERADMIN` and current-organization `ORG_ADMIN`
 - Invitation flow and first-login password setup with hashed single-use tokens
 - Forgot password and password reset flows with hashed tokens
 - Notification event history with `local-mock` or `smtp` email providers
@@ -26,7 +26,7 @@ This project provides a practical baseline for authentication, authorization, us
 
 ## Tech Stack
 
-- Backend: Java 21, Spring Boot 3.5.10, Spring Security, Spring GraphQL, JDBC, Flyway
+- Backend: Java 21, Spring Boot 3.5.14, Spring Security, Spring GraphQL, JDBC, Flyway
 - Database: PostgreSQL 16 in local Docker Compose
 - Frontend: Angular 20.2, Apollo Angular, RxJS, lucide-angular
 - Tooling: Gradle wrapper, Node 22.14.0, pnpm 10.6.5, Docker Compose
@@ -35,8 +35,9 @@ This project provides a practical baseline for authentication, authorization, us
 
 - [backend](./backend/README.md): Spring Boot application, GraphQL schema, security configuration, Flyway migrations, and tests
 - [frontend](./frontend/README.md): Angular application, auth flows, route guards, GraphQL client, runtime config, and tests
-- [docker-compose.yml](./docker-compose.yml): local PostgreSQL and backend services
-- [.env.example](./.env.example): reference local environment variables
+- [docker-compose.yml](./docker-compose.yml): local-only PostgreSQL and backend services bound to `127.0.0.1`
+- [.env.example](./.env.example): safe reference environment variables
+- [.env.local.example](./.env.local.example): local-only demo credentials and developer settings
 - [Makefile](./Makefile): verification shortcuts for backend and frontend checks
 - [docs/en](./docs/en/README.md): canonical detailed documentation
 - [docs/zh-CN](./docs/zh-CN/README.md): Simplified Chinese documentation
@@ -50,7 +51,7 @@ Start PostgreSQL and the backend with Docker Compose:
 docker compose up --build
 ```
 
-The backend runs at `http://localhost:8080`. The Compose file supplies local backend environment values directly. Use [.env.example](./.env.example) as the reference list of configurable variables.
+The backend runs at `http://localhost:8080`. Docker Compose binds backend and PostgreSQL ports to `127.0.0.1` and is intended only for local development. Compose explicitly sets `SPRING_PROFILES_ACTIVE=local` for demo credentials; the backend Docker image itself does not default to the local profile. Use [.env.example](./.env.example) for safe defaults and [.env.local.example](./.env.local.example) only for local demo credentials.
 
 Run the frontend separately:
 
@@ -73,6 +74,8 @@ This expects PostgreSQL at `jdbc:postgresql://localhost:5432/authstarter` unless
 
 ## Default Local Users
 
+These are local-only demo credentials from the `local`/`dev` profiles and Docker Compose. Do not use them in deployed environments.
+
 Baseline local login:
 
 - `operator@authstarter.local`
@@ -83,6 +86,8 @@ Additional local users in [application-local.yml](./backend/src/main/resources/a
 
 - `org-admin@authstarter.local` / `authstarter-local-password` / `ORG_ADMIN`
 - `user@authstarter.local` / `authstarter-local-password` / `USER`
+
+Break-glass authentication is disabled by default in [application.yml](./backend/src/main/resources/application.yml). The local profile and Docker Compose explicitly enable it only for local demo use.
 
 ## API Overview
 
@@ -109,7 +114,7 @@ Authenticated operations:
 - `notificationEvents`
 - `changeOwnPassword`
 
-Admin operations requiring `SUPERADMIN` or `ORG_ADMIN`:
+Admin operations requiring `SUPERADMIN` or current-organization `ORG_ADMIN`:
 
 - `adminManagementBaseline`
 - `adminCreateUser`
@@ -139,11 +144,19 @@ Important backend variables:
 - `AUTH_STARTER_BASELINE_AUTH_DISPLAY_NAME`
 - `AUTH_STARTER_BASELINE_AUTH_ROLE`
 - `AUTH_STARTER_BASELINE_AUTH_BREAK_GLASS_ENABLED`
+- `AUTH_STARTER_GRAPHQL_MAX_QUERY_DEPTH`
+- `AUTH_STARTER_GRAPHQL_MAX_QUERY_COMPLEXITY`
+- `AUTH_STARTER_GRAPHQL_MAX_REQUEST_BYTES`
+- `AUTH_STARTER_GRAPHQL_INTROSPECTION_ENABLED`
 - `AUTH_STARTER_NOTIFICATION_EMAIL_PROVIDER`
 - `AUTH_STARTER_SMTP_HOST`
 - `AUTH_STARTER_SMTP_PORT`
 
 Use `AUTH_STARTER_NOTIFICATION_EMAIL_PROVIDER=local-mock` for local development without a mail server. Use `smtp` with the SMTP variables in [.env.example](./.env.example) for a local mail catcher or SMTP service.
+
+Public auth mutations have a basic in-memory rate limiter. For production or multi-instance deployments, replace or back it with distributed storage such as Redis.
+
+GraphiQL is disabled by default. GraphQL introspection is disabled by default through `AUTH_STARTER_GRAPHQL_INTROSPECTION_ENABLED=false`; local/dev configuration enables it for developer use.
 
 The frontend development environment points to:
 
@@ -190,6 +203,7 @@ npx -y pnpm@10.6.5 run frontend:lint
 
 - This repository does not include a documentation framework such as VitePress or Docusaurus.
 - The local Docker Compose file is a development setup, not production infrastructure.
+- The backend Docker image starts with safe base defaults unless `SPRING_PROFILES_ACTIVE` is explicitly provided.
 - The starter does not include application-specific business workflows.
 - The starter does not currently include a separate frontend container image.
 

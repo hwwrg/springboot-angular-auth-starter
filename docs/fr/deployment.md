@@ -8,13 +8,15 @@ Ce dépôt contient une configuration Compose pour le développement local et un
 
 [../../backend/Dockerfile](../../backend/Dockerfile) construit le Spring Boot jar avec Java 21, puis l'exécute sur une Java 21 JRE image. Le conteneur expose le port `8080`.
 
+L'image runtime s'exécute avec un utilisateur non-root et n'installe pas curl ni d'autres outils runtime supplémentaires.
+
 L'entrypoint exécute :
 
 ```sh
-java -jar /app/springboot-angular-auth-starter-backend.jar --spring.profiles.active=${SPRING_PROFILES_ACTIVE:-local}
+java -jar /app/springboot-angular-auth-starter-backend.jar
 ```
 
-Définir `SPRING_PROFILES_ACTIVE` explicitement hors développement local.
+L'image démarre avec les valeurs sûres de base de `application.yml` sauf si `SPRING_PROFILES_ACTIVE` est fourni explicitement. Elle n'active pas le profil local ni les identifiants de démonstration locaux par défaut.
 
 ## Configuration Runtime du Backend
 
@@ -38,7 +40,13 @@ Pour la livraison SMTP, configurer aussi :
 - `AUTH_STARTER_SMTP_AUTH`
 - `AUTH_STARTER_SMTP_START_TLS`
 
-Relire [../../.env.example](../../.env.example) et [../../backend/src/main/resources/application.yml](../../backend/src/main/resources/application.yml) avant de déployer.
+Relire [../../.env.example](../../.env.example) et [../../backend/src/main/resources/application.yml](../../backend/src/main/resources/application.yml) avant de déployer. [../../.env.local.example](../../.env.local.example) est local-only et ne doit pas être utilisé dans un environnement déployé.
+
+L'authentification break-glass est désactivée par défaut. Ne pas déployer les identifiants de démonstration locaux depuis `application-local.yml`, `application-dev.yml`, `.env.local.example` ou Docker Compose.
+
+Les mutations publiques d'authentification incluent un rate limiter basique en mémoire. En production ou avec plusieurs instances, le remplacer ou l'appuyer sur un stockage distribué comme Redis.
+
+Garder l'introspection GraphQL désactivée dans les profils déployés sauf besoin opérationnel explicite. Configurer les limites de profondeur, complexité et taille de corps avec les variables `AUTH_STARTER_GRAPHQL_*`.
 
 ## Build Frontend
 
@@ -55,5 +63,9 @@ L'environnement de développement pointe actuellement vers `http://localhost:808
 ## Portée du Compose Local
 
 [../../docker-compose.yml](../../docker-compose.yml) démarre PostgreSQL et le backend pour le développement local. Ce n'est pas un modèle de déploiement en production.
+
+Les ports PostgreSQL et backend du Compose sont liés à `127.0.0.1` pour l'usage local.
+
+Compose définit explicitement `SPRING_PROFILES_ACTIVE=local` pour les identifiants de démonstration locaux. Ne pas copier ce réglage dans un environnement déployé sauf si vous maintenez volontairement un profil déployé séparé.
 
 Avant d'utiliser ce starter dans un système déployé, vérifier cookie security, HTTPS, CORS origins, SMTP, password policy, monitoring, backup, retention et operational access.
