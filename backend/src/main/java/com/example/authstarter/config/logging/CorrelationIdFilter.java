@@ -5,8 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -16,6 +16,8 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
 
     public static final String CORRELATION_ID_HEADER = "X-Correlation-Id";
     public static final String CORRELATION_ID_MDC_KEY = "correlationId";
+    private static final int MAX_CORRELATION_ID_LENGTH = 64;
+    private static final Pattern CORRELATION_ID_PATTERN = Pattern.compile("[A-Za-z0-9._-]+");
 
     @Override
     protected void doFilterInternal(
@@ -23,9 +25,7 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        String correlationId = Optional.ofNullable(request.getHeader(CORRELATION_ID_HEADER))
-                .filter(value -> !value.isBlank())
-                .orElseGet(() -> UUID.randomUUID().toString());
+        String correlationId = sanitize(request.getHeader(CORRELATION_ID_HEADER));
 
         MDC.put(CORRELATION_ID_MDC_KEY, correlationId);
         response.setHeader(CORRELATION_ID_HEADER, correlationId);
@@ -36,5 +36,14 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
             MDC.remove(CORRELATION_ID_MDC_KEY);
         }
     }
-}
 
+    private String sanitize(String candidate) {
+        if (candidate == null
+                || candidate.isBlank()
+                || candidate.length() > MAX_CORRELATION_ID_LENGTH
+                || !CORRELATION_ID_PATTERN.matcher(candidate).matches()) {
+            return UUID.randomUUID().toString();
+        }
+        return candidate;
+    }
+}

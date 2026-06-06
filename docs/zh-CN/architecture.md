@@ -47,4 +47,4 @@
 - `ORG_ADMIN`
 - `USER`
 
-Admin routes 和 GraphQL operations 需要 `SUPERADMIN` 或 `ORG_ADMIN`；只有已有 `SUPERADMIN` 可以分配 `SUPERADMIN`。
+Admin routes 和 GraphQL operations 需要 `SUPERADMIN` 或当前 organization context 中的 `ORG_ADMIN`。只有 `SUPERADMIN` 可以分配或修改 `SUPERADMIN`；`ORG_ADMIN` 不能修改 `SUPERADMIN` 用户，不能修改自己的 role、user status、membership status 或 primary membership，也不能分配 `ORG_ADMIN`，除非 backend policy 显式允许。

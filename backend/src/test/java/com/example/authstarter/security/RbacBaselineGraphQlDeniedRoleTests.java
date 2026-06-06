@@ -21,7 +21,8 @@ import org.springframework.test.web.servlet.MvcResult;
                 "authstarter.auth.baseline.username=user@example.test",
                 "authstarter.auth.baseline.password=test-password",
                 "authstarter.auth.baseline.display-name=Baseline User",
-                "authstarter.auth.baseline.role=USER"
+                "authstarter.auth.baseline.role=USER",
+                "authstarter.auth.baseline.break-glass-enabled=true"
         })
 @AutoConfigureMockMvc
 class RbacBaselineGraphQlDeniedRoleTests {

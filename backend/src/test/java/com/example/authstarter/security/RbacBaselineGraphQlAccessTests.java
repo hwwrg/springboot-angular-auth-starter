@@ -23,7 +23,8 @@ import org.springframework.test.web.servlet.MvcResult;
                 "authstarter.auth.baseline.username=admin@example.test",
                 "authstarter.auth.baseline.password=test-password",
                 "authstarter.auth.baseline.display-name=Organization Admin",
-                "authstarter.auth.baseline.role=ORG_ADMIN"
+                "authstarter.auth.baseline.role=ORG_ADMIN",
+                "authstarter.auth.baseline.break-glass-enabled=true"
         })
 @AutoConfigureMockMvc
 class RbacBaselineGraphQlAccessTests {

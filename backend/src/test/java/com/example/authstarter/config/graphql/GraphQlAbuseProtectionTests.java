@@ -1,4 +1,4 @@
-package com.example.authstarter.config.security;
+package com.example.authstarter.config.graphql;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -25,31 +25,81 @@ import org.springframework.test.web.servlet.MvcResult;
                 "authstarter.auth.baseline.display-name=Baseline Operator",
                 "authstarter.auth.baseline.role=SUPERADMIN",
                 "authstarter.auth.baseline.break-glass-enabled=true",
-                "authstarter.graphql.introspection-enabled=true"
+                "authstarter.graphql.max-query-depth=2",
+                "authstarter.graphql.max-query-complexity=4",
+                "authstarter.graphql.max-request-bytes=1024",
+                "authstarter.graphql.introspection-enabled=false"
         })
 @AutoConfigureMockMvc
-class GraphQlEndpointSecurityTests {
+class GraphQlAbuseProtectionTests {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    void readinessGraphQlQueryIsAccessibleWithoutAuthentication() throws Exception {
-        mockMvc.perform(post("/graphql")
-                        .with(csrf().asHeader())
-                        .contentType(APPLICATION_JSON)
-                        .content("{\"query\":\"{ readiness { status application } }\"}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.readiness.status").value("UP"))
-                .andExpect(jsonPath("$.data.readiness.application").value("springboot-angular-auth-starter-backend"));
+    void overlyDeepPublicQueryIsRejected() throws Exception {
+        assertBadGraphQlRequest("""
+                {
+                  "query": "{ currentSession { principal { email } } }"
+                }
+                """);
     }
 
     @Test
-    void anonymousGraphQlAccessIsLimitedToExplicitPublicOperations() throws Exception {
+    void overlyComplexPublicQueryIsRejected() throws Exception {
+        assertBadGraphQlRequest("""
+                {
+                  "query": "{ readiness { status application } currentSession { authenticated mustChangePassword } }"
+                }
+                """);
+    }
+
+    @Test
+    void oversizedGraphQlRequestBodyIsRejected() throws Exception {
+        mockMvc.perform(post("/graphql")
+                        .with(csrf().asHeader())
+                        .contentType(APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "query": "{ readiness { status application } }",
+                                  "variables": {
+                                    "padding": "%s"
+                                  }
+                                }
+                                """.formatted("x".repeat(1024))))
+                .andExpect(status().isPayloadTooLarge());
+    }
+
+    @Test
+    void authenticatedIntrospectionIsRejectedWhenDisabled() throws Exception {
+        MockHttpSession session = login();
+
+        MvcResult result = mockMvc.perform(post("/graphql")
+                        .session(session)
+                        .with(csrf().asHeader())
+                        .contentType(APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "query": "{ __schema { queryType { name } } }"
+                                }
+                                """))
+                .andExpect(request().asyncStarted())
+                .andReturn();
+
+        mockMvc.perform(asyncDispatch(result))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void anonymousNonPublicRootFieldStillUsesAuthorizationPolicy() throws Exception {
         MvcResult result = mockMvc.perform(post("/graphql")
                         .with(csrf().asHeader())
                         .contentType(APPLICATION_JSON)
-                        .content("{\"query\":\"{ __schema { queryType { name } } }\"}"))
+                        .content("""
+                                {
+                                  "query": "{ notificationEvents { id } }"
+                                }
+                                """))
                 .andExpect(request().asyncStarted())
                 .andReturn();
 
@@ -57,8 +107,19 @@ class GraphQlEndpointSecurityTests {
                 .andExpect(status().isUnauthorized());
     }
 
-    @Test
-    void authenticatedGraphQlAccessAllowsNonPublicOperations() throws Exception {
+    private void assertBadGraphQlRequest(String body) throws Exception {
+        MvcResult result = mockMvc.perform(post("/graphql")
+                        .with(csrf().asHeader())
+                        .contentType(APPLICATION_JSON)
+                        .content(body))
+                .andExpect(request().asyncStarted())
+                .andReturn();
+
+        mockMvc.perform(asyncDispatch(result))
+                .andExpect(status().isBadRequest());
+    }
+
+    private MockHttpSession login() throws Exception {
         MvcResult loginResult = mockMvc.perform(post("/graphql")
                         .with(csrf().asHeader())
                         .contentType(APPLICATION_JSON)
@@ -79,13 +140,6 @@ class GraphQlEndpointSecurityTests {
 
         MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession(false);
         assertThat(session).isNotNull();
-
-        mockMvc.perform(post("/graphql")
-                        .session(session)
-                        .with(csrf().asHeader())
-                        .contentType(APPLICATION_JSON)
-                        .content("{\"query\":\"{ __schema { queryType { name } } }\"}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.__schema.queryType.name").value("Query"));
+        return session;
     }
 }

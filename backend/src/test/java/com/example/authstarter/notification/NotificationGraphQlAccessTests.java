@@ -31,7 +31,8 @@ import org.springframework.test.web.servlet.MvcResult;
                 "authstarter.auth.baseline.username=operator@authstarter.local",
                 "authstarter.auth.baseline.password=test-password",
                 "authstarter.auth.baseline.display-name=Baseline Operator",
-                "authstarter.auth.baseline.role=ORG_ADMIN"
+                "authstarter.auth.baseline.role=ORG_ADMIN",
+                "authstarter.auth.baseline.break-glass-enabled=true"
         })
 @AutoConfigureMockMvc
 class NotificationGraphQlAccessTests {

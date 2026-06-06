@@ -18,7 +18,7 @@
 - 通过 `GET /auth/csrf` 初始化 CSRF token，非安全请求使用 `X-XSRF-TOKEN`
 - RBAC 角色：`SUPERADMIN`、`ORG_ADMIN`、`USER`
 - Current user、organization context、workspace 和 membership queries
-- `SUPERADMIN` 和 `ORG_ADMIN` 可创建和更新 admin users
+- `SUPERADMIN` 和当前组织中的 `ORG_ADMIN` 可创建和更新 admin users
 - 使用哈希化一次性 token 的 invitation flow 和 first-login password setup
 - Forgot password 和 password reset 流程
 - 使用 `local-mock` 或 `smtp` email provider 的 notification event history
@@ -26,7 +26,7 @@
 
 ## 技术栈
 
-- 后端：Java 21、Spring Boot 3.5.10、Spring Security、Spring GraphQL、JDBC、Flyway
+- 后端：Java 21、Spring Boot 3.5.14、Spring Security、Spring GraphQL、JDBC、Flyway
 - 数据库：本地 Docker Compose 中的 PostgreSQL 16
 - 前端：Angular 20.2、Apollo Angular、RxJS、lucide-angular
 - 工具：Gradle wrapper、Node 22.14.0、pnpm 10.6.5、Docker Compose
@@ -39,7 +39,7 @@
 docker compose up --build
 ```
 
-后端地址是 `http://localhost:8080`。当前 [docker-compose.yml](./docker-compose.yml) 已直接提供本地后端环境变量；[.env.example](./.env.example) 是可配置变量参考。
+后端地址是 `http://localhost:8080`。[docker-compose.yml](./docker-compose.yml) 将 backend 和 PostgreSQL 端口绑定到 `127.0.0.1`，仅用于本地开发。Compose 会为演示凭据显式设置 `SPRING_PROFILES_ACTIVE=local`；后端 Docker 镜像本身默认不会启用 local profile。[.env.example](./.env.example) 提供安全默认值；[.env.local.example](./.env.local.example) 提供 local-only 演示凭据。
 
 单独启动前端：
 
@@ -62,9 +62,17 @@ cd backend
 
 ## 默认本地用户
 
+这些是 `local`/`dev` profiles 和 Docker Compose 提供的 local-only 演示凭据。不要在部署环境中使用它们。
+
 - `operator@authstarter.local` / `authstarter-local-password` / `SUPERADMIN`
 - `org-admin@authstarter.local` / `authstarter-local-password` / `ORG_ADMIN`
 - `user@authstarter.local` / `authstarter-local-password` / `USER`
+
+Break-glass 认证在 [application.yml](./backend/src/main/resources/application.yml) 中默认关闭。local profile 和 Docker Compose 只为本地演示显式启用它。
+
+公开认证 mutations 使用基础的内存 rate limiter。生产或多实例部署应改用或接入 Redis 等分布式存储。
+
+GraphiQL 默认关闭。GraphQL introspection 默认通过 `AUTH_STARTER_GRAPHQL_INTROSPECTION_ENABLED=false` 关闭；local/dev 配置会为开发启用它。
 
 ## API 概览
 
@@ -91,7 +99,7 @@ cd backend
 - `notificationEvents`
 - `changeOwnPassword`
 
-需要 `SUPERADMIN` 或 `ORG_ADMIN` 的管理员操作：
+需要 `SUPERADMIN` 或当前组织 `ORG_ADMIN` 的管理员操作：
 
 - `adminManagementBaseline`
 - `adminCreateUser`
