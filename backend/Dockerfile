@@ -16,4 +16,4 @@ RUN chown -R authstarter:authstarter /app
 USER authstarter
 
 EXPOSE 8080
-ENTRYPOINT ["sh", "-c", "java -jar /app/springboot-angular-auth-starter-backend.jar --spring.profiles.active=${SPRING_PROFILES_ACTIVE:-local}"]
+ENTRYPOINT ["java", "-jar", "/app/springboot-angular-auth-starter-backend.jar"]

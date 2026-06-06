@@ -46,7 +46,7 @@
 
 ## 无法访问管理员页面
 
-Frontend admin route 和 backend admin operations 需要 `SUPERADMIN` 或 `ORG_ADMIN`。`USER` role 会被重定向到 not-authorized page。
+Frontend admin route 和 backend admin operations 需要 `SUPERADMIN` 或当前 organization context 中的 `ORG_ADMIN`。`USER` role 会被重定向到 not-authorized page。
 
 ## 邮件未发送
 

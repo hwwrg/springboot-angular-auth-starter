@@ -18,7 +18,7 @@ Le projet fournit une base pratique pour l'authentification, l'autorisation, la 
 - Initialisation CSRF via `GET /auth/csrf` et header `X-XSRF-TOKEN` pour les requêtes non sûres
 - Rôles RBAC : `SUPERADMIN`, `ORG_ADMIN`, `USER`
 - Requêtes de current user, organization context, workspace et membership
-- Création et mise à jour d'admin users par `SUPERADMIN` et `ORG_ADMIN`
+- Création et mise à jour d'admin users par `SUPERADMIN` et `ORG_ADMIN` dans l'organisation courante
 - Invitation flow et first-login password setup avec des tokens à usage unique hashés
 - Flux forgot password et password reset
 - Historique des notification events avec les fournisseurs email `local-mock` ou `smtp`
@@ -39,7 +39,7 @@ Démarrer PostgreSQL et le backend :
 docker compose up --build
 ```
 
-Le backend écoute sur `http://localhost:8080`. [docker-compose.yml](./docker-compose.yml) lie les ports backend et PostgreSQL à `127.0.0.1` et sert uniquement au développement local. [.env.example](./.env.example) contient des valeurs sûres par défaut ; [.env.local.example](./.env.local.example) contient les identifiants de démonstration local-only.
+Le backend écoute sur `http://localhost:8080`. [docker-compose.yml](./docker-compose.yml) lie les ports backend et PostgreSQL à `127.0.0.1` et sert uniquement au développement local. Compose définit explicitement `SPRING_PROFILES_ACTIVE=local` pour les identifiants de démonstration ; l'image Docker backend elle-même n'active pas le profil local par défaut. [.env.example](./.env.example) contient des valeurs sûres par défaut ; [.env.local.example](./.env.local.example) contient les identifiants de démonstration local-only.
 
 Démarrer le frontend séparément :
 
@@ -99,7 +99,7 @@ Opérations nécessitant une authentification :
 - `notificationEvents`
 - `changeOwnPassword`
 
-Opérations d'administration nécessitant `SUPERADMIN` ou `ORG_ADMIN` :
+Opérations d'administration nécessitant `SUPERADMIN` ou `ORG_ADMIN` dans l'organisation courante :
 
 - `adminManagementBaseline`
 - `adminCreateUser`

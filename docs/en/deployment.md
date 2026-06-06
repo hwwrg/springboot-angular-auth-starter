@@ -13,10 +13,10 @@ The runtime image runs as a non-root user and does not install curl or other ext
 The entrypoint runs:
 
 ```sh
-java -jar /app/springboot-angular-auth-starter-backend.jar --spring.profiles.active=${SPRING_PROFILES_ACTIVE:-local}
+java -jar /app/springboot-angular-auth-starter-backend.jar
 ```
 
-Set `SPRING_PROFILES_ACTIVE` explicitly outside local development.
+The image starts with the safe base `application.yml` defaults unless `SPRING_PROFILES_ACTIVE` is explicitly provided. It does not enable the local profile or local demo credentials by default.
 
 ## Backend Runtime Configuration
 
@@ -65,5 +65,7 @@ The development environment currently points to `http://localhost:8080`. Runtime
 [../../docker-compose.yml](../../docker-compose.yml) starts PostgreSQL and the backend for local development. It is not a production deployment template.
 
 The Compose PostgreSQL and backend ports are bound to `127.0.0.1` for local use.
+
+Compose explicitly sets `SPRING_PROFILES_ACTIVE=local` for local demo credentials. Do not copy that setting into deployed environments unless you intentionally maintain a separate deployed profile.
 
 Before using this starter in a deployed system, review cookie security, HTTPS, CORS origins, SMTP, password policy, monitoring, backup, retention, and operational access.

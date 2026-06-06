@@ -85,7 +85,7 @@ class JdbcAdminManagementService implements AdminManagementService {
 
     @Override
     public AdminManagementBaselinePayload adminManagementBaseline(AuthPrincipal principal) {
-        OrganizationContextPayload organization = requireCurrentOrganization(principal);
+        OrganizationContextPayload organization = requireAdminOrganization(principal);
         List<AdminUserSummaryPayload> users = listUsers(organization);
         List<NotificationEventPayload> notificationEvents = notificationService.listNotificationEvents(principal);
         return new AdminManagementBaselinePayload(
@@ -98,9 +98,9 @@ class JdbcAdminManagementService implements AdminManagementService {
     @Override
     @Transactional
     public AdminUserSummaryPayload createUser(AuthPrincipal principal, CreateAdminUserInput input) {
-        OrganizationContextPayload organization = requireCurrentOrganization(principal);
+        OrganizationContextPayload organization = requireAdminOrganization(principal);
         ValidatedUserInput validated = validateCreateInput(input);
-        authorizationPolicy.authorizeCreate(principal, validated.role());
+        authorizationPolicy.authorizeCreate(principal, organization, validated.role());
         if (findUserIdByEmail(validated.email()) != null) {
             throw new IllegalArgumentException("User email already exists.");
         }
@@ -156,17 +156,19 @@ class JdbcAdminManagementService implements AdminManagementService {
     @Override
     @Transactional
     public AdminUserSummaryPayload updateUser(AuthPrincipal principal, UpdateAdminUserInput input) {
-        OrganizationContextPayload organization = requireCurrentOrganization(principal);
+        OrganizationContextPayload organization = requireAdminOrganization(principal);
         UUID userId = parseRequiredUuid(input == null ? null : input.id(), "User id");
         AdminUserSummaryPayload existing = requireUser(organization, userId);
         ValidatedUserUpdateInput validated = validateUpdateInput(input);
         authorizationPolicy.authorizeUpdate(
                 principal,
+                organization,
                 userId,
                 existing,
                 validated.role(),
                 validated.userStatus(),
-                validated.membershipStatus());
+                validated.membershipStatus(),
+                validated.primaryMembership());
 
         int updatedUserRows = jdbcClient.sql("""
                         update app_users u
@@ -296,6 +298,12 @@ class JdbcAdminManagementService implements AdminManagementService {
     private OrganizationContextPayload requireCurrentOrganization(AuthPrincipal principal) {
         return currentUserContextService.findCurrentOrganizationContext(principal)
                 .orElseThrow(() -> new AccessDeniedException("An active organization context is required."));
+    }
+
+    private OrganizationContextPayload requireAdminOrganization(AuthPrincipal principal) {
+        OrganizationContextPayload organization = requireCurrentOrganization(principal);
+        authorizationPolicy.authorizeAdminAccess(principal, organization);
+        return organization;
     }
 
     private ValidatedUserInput validateCreateInput(CreateAdminUserInput input) {

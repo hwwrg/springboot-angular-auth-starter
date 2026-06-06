@@ -13,10 +13,10 @@
 入口命令运行：
 
 ```sh
-java -jar /app/springboot-angular-auth-starter-backend.jar --spring.profiles.active=${SPRING_PROFILES_ACTIVE:-local}
+java -jar /app/springboot-angular-auth-starter-backend.jar
 ```
 
-本地开发以外的环境应显式设置 `SPRING_PROFILES_ACTIVE`。
+镜像默认使用安全的基础 `application.yml` 配置；只有显式提供 `SPRING_PROFILES_ACTIVE` 时才会启用对应 profile。镜像本身默认不会启用 local profile 或本地演示凭据。
 
 ## 后端运行时配置
 
@@ -65,5 +65,7 @@ npx -y pnpm@10.6.5 build
 [../../docker-compose.yml](../../docker-compose.yml) 用于本地开发，启动 PostgreSQL 和后端。它不是生产部署模板。
 
 Compose 的 PostgreSQL 和 backend 端口都为本地使用绑定到 `127.0.0.1`。
+
+Compose 会为本地演示凭据显式设置 `SPRING_PROFILES_ACTIVE=local`。除非有意维护单独的部署 profile，否则不要将该设置复制到部署环境。
 
 部署到真实系统前，请检查 cookie security、HTTPS、CORS origins、SMTP、password policy、monitoring、backup、retention 和 operational access。

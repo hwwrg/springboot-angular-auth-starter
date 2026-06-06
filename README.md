@@ -18,7 +18,7 @@ This project provides a practical baseline for authentication, authorization, us
 - CSRF bootstrap at `GET /auth/csrf` and `X-XSRF-TOKEN` headers for unsafe requests
 - RBAC roles: `SUPERADMIN`, `ORG_ADMIN`, `USER`
 - Current user, organization context, workspace, and membership queries
-- Admin user creation and updates for `SUPERADMIN` and `ORG_ADMIN`
+- Admin user creation and updates for `SUPERADMIN` and current-organization `ORG_ADMIN`
 - Invitation flow and first-login password setup with hashed single-use tokens
 - Forgot password and password reset flows with hashed tokens
 - Notification event history with `local-mock` or `smtp` email providers
@@ -51,7 +51,7 @@ Start PostgreSQL and the backend with Docker Compose:
 docker compose up --build
 ```
 
-The backend runs at `http://localhost:8080`. Docker Compose binds backend and PostgreSQL ports to `127.0.0.1` and is intended only for local development. Use [.env.example](./.env.example) for safe defaults and [.env.local.example](./.env.local.example) only for local demo credentials.
+The backend runs at `http://localhost:8080`. Docker Compose binds backend and PostgreSQL ports to `127.0.0.1` and is intended only for local development. Compose explicitly sets `SPRING_PROFILES_ACTIVE=local` for demo credentials; the backend Docker image itself does not default to the local profile. Use [.env.example](./.env.example) for safe defaults and [.env.local.example](./.env.local.example) only for local demo credentials.
 
 Run the frontend separately:
 
@@ -114,7 +114,7 @@ Authenticated operations:
 - `notificationEvents`
 - `changeOwnPassword`
 
-Admin operations requiring `SUPERADMIN` or `ORG_ADMIN`:
+Admin operations requiring `SUPERADMIN` or current-organization `ORG_ADMIN`:
 
 - `adminManagementBaseline`
 - `adminCreateUser`
@@ -203,6 +203,7 @@ npx -y pnpm@10.6.5 run frontend:lint
 
 - This repository does not include a documentation framework such as VitePress or Docusaurus.
 - The local Docker Compose file is a development setup, not production infrastructure.
+- The backend Docker image starts with safe base defaults unless `SPRING_PROFILES_ACTIVE` is explicitly provided.
 - The starter does not include application-specific business workflows.
 - The starter does not currently include a separate frontend container image.
 

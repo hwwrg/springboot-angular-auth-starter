@@ -64,7 +64,7 @@ Roles 由 `AuthStarterRole` 表示：
 - `ORG_ADMIN`
 - `USER`
 
-Angular admin route 使用 `roleAccessGuard`。后端 admin management 会检查已认证的 principal 和 current organization context。只有 `SUPERADMIN` 可以分配或修改 `SUPERADMIN`；`ORG_ADMIN` 不能修改 `SUPERADMIN` 用户，不能修改自己的 role/status，也不能分配 `ORG_ADMIN`，除非 backend policy 显式允许。
+Angular admin route 使用 `roleAccessGuard`。后端 admin management 会检查已认证的 principal 和 current organization context。只有 `SUPERADMIN` 可以分配或修改 `SUPERADMIN`；`ORG_ADMIN` 不能修改 `SUPERADMIN` 用户，不能修改自己的 role、user status、membership status 或 primary membership，也不能分配 `ORG_ADMIN`，除非 backend policy 显式允许。
 
 ## Invitation and Password Reset
 

@@ -64,7 +64,7 @@ Roles are represented by `AuthStarterRole`:
 - `ORG_ADMIN`
 - `USER`
 
-The Angular admin route uses `roleAccessGuard`. Backend admin management checks the authenticated principal and current organization context. Only `SUPERADMIN` can assign or modify `SUPERADMIN`; `ORG_ADMIN` cannot modify `SUPERADMIN` users, cannot change its own role/status, and cannot assign `ORG_ADMIN` unless the backend policy explicitly allows it.
+The Angular admin route uses `roleAccessGuard`. Backend admin management checks the authenticated principal and current organization context. Only `SUPERADMIN` can assign or modify `SUPERADMIN`; `ORG_ADMIN` cannot modify `SUPERADMIN` users, cannot change its own role, user status, membership status, or primary membership, and cannot assign `ORG_ADMIN` unless the backend policy explicitly allows it.
 
 ## Invitation and Password Reset
 

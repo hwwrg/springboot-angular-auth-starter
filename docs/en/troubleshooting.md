@@ -46,7 +46,7 @@ If GraphQL requests fail with depth, complexity, request body size, or introspec
 
 ## Admin Page Is Not Accessible
 
-The frontend admin route and backend admin operations require `SUPERADMIN` or `ORG_ADMIN`. The `USER` role is redirected to the not-authorized page.
+The frontend admin route and backend admin operations require `SUPERADMIN` or `ORG_ADMIN` in the current organization context. The `USER` role is redirected to the not-authorized page.
 
 ## Email Is Not Delivered
 

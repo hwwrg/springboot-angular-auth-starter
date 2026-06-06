@@ -46,7 +46,7 @@ Si les requêtes GraphQL échouent avec des erreurs de profondeur, complexité, 
 
 ## Page Admin Inaccessible
 
-La frontend admin route et les backend admin operations demandent `SUPERADMIN` ou `ORG_ADMIN`. Le role `USER` est redirigé vers la not-authorized page.
+La frontend admin route et les backend admin operations demandent `SUPERADMIN` ou `ORG_ADMIN` dans le current organization context. Le role `USER` est redirigé vers la not-authorized page.
 
 ## Email Non Envoyé
 
