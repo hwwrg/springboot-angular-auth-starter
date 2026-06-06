@@ -14,6 +14,17 @@ The `local` profile enables local-only demo break-glass credentials. Break-glass
 
 The backend Docker image does not set `SPRING_PROFILES_ACTIVE=local` by default. Docker Compose sets that profile only for local demo use.
 
+## API Documentation
+
+With the backend running locally, open:
+
+- Swagger UI: `http://localhost:8080/swagger-ui.html`
+- OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+- OpenAPI YAML: `http://localhost:8080/v3/api-docs.yaml`
+- GraphQL endpoint: `http://localhost:8080/graphql`
+
+OpenAPI documents REST support endpoints such as `GET /auth/csrf`. Auth, RBAC, invitation, password-reset, notification, and user-management workflows are exposed through GraphQL and documented in [`schema.graphqls`](./src/main/resources/graphql/schema.graphqls) and the root API guide.
+
 ## Test
 
 ```sh
