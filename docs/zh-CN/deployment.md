@@ -40,11 +40,13 @@ java -jar /app/springboot-angular-auth-starter-backend.jar --spring.profiles.act
 - `AUTH_STARTER_SMTP_AUTH`
 - `AUTH_STARTER_SMTP_START_TLS`
 
-部署前查看 [../../.env.example](../../.env.example) 和 [../../backend/src/main/resources/application.yml](../../backend/src/main/resources/application.yml)。
+部署前查看 [../../.env.example](../../.env.example) 和 [../../backend/src/main/resources/application.yml](../../backend/src/main/resources/application.yml)。[../../.env.local.example](../../.env.local.example) 是 local-only，不能用于部署环境。
 
-Break-glass 认证默认关闭。不要部署 `application-local.yml`、`application-dev.yml`、`.env.example` 或 Docker Compose 中的本地演示凭据。
+Break-glass 认证默认关闭。不要部署 `application-local.yml`、`application-dev.yml`、`.env.local.example` 或 Docker Compose 中的本地演示凭据。
 
 公开认证 mutations 包含基础的内存 rate limiter。生产或多实例部署应替换为或接入 Redis 等分布式存储。
+
+部署 profile 应保持 GraphQL introspection 关闭，除非有明确运维需要。用 `AUTH_STARTER_GRAPHQL_*` 变量配置深度、复杂度和请求体大小限制。
 
 ## 前端构建
 
@@ -62,6 +64,6 @@ npx -y pnpm@10.6.5 build
 
 [../../docker-compose.yml](../../docker-compose.yml) 用于本地开发，启动 PostgreSQL 和后端。它不是生产部署模板。
 
-Compose 的 PostgreSQL 端口为本地使用绑定到 `127.0.0.1:5432`。
+Compose 的 PostgreSQL 和 backend 端口都为本地使用绑定到 `127.0.0.1`。
 
 部署到真实系统前，请检查 cookie security、HTTPS、CORS origins、SMTP、password policy、monitoring、backup、retention 和 operational access。

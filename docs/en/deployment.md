@@ -40,11 +40,13 @@ For SMTP delivery, also configure:
 - `AUTH_STARTER_SMTP_AUTH`
 - `AUTH_STARTER_SMTP_START_TLS`
 
-Review [../../.env.example](../../.env.example) and [../../backend/src/main/resources/application.yml](../../backend/src/main/resources/application.yml) before deploying.
+Review [../../.env.example](../../.env.example) and [../../backend/src/main/resources/application.yml](../../backend/src/main/resources/application.yml) before deploying. [../../.env.local.example](../../.env.local.example) is local-only and must not be used in deployed environments.
 
-Break-glass authentication defaults to disabled. Do not deploy the local demo credentials from `application-local.yml`, `application-dev.yml`, `.env.example`, or Docker Compose.
+Break-glass authentication defaults to disabled. Do not deploy the local demo credentials from `application-local.yml`, `application-dev.yml`, `.env.local.example`, or Docker Compose.
 
 Public auth mutations include a basic in-memory rate limiter. Production or multi-instance deployments should replace or back it with distributed storage such as Redis.
+
+Keep GraphQL introspection disabled in deployed profiles unless you have an explicit operational need. Configure depth, complexity, and request body size limits with the `AUTH_STARTER_GRAPHQL_*` variables.
 
 ## Frontend Build
 
@@ -62,6 +64,6 @@ The development environment currently points to `http://localhost:8080`. Runtime
 
 [../../docker-compose.yml](../../docker-compose.yml) starts PostgreSQL and the backend for local development. It is not a production deployment template.
 
-The Compose PostgreSQL port is bound to `127.0.0.1:5432` for local use.
+The Compose PostgreSQL and backend ports are bound to `127.0.0.1` for local use.
 
 Before using this starter in a deployed system, review cookie security, HTTPS, CORS origins, SMTP, password policy, monitoring, backup, retention, and operational access.

@@ -46,6 +46,16 @@ Break-glass 认证在 [application.yml](../../backend/src/main/resources/applica
 
 这是适合单个 backend 进程的 starter 级保护。生产或多实例部署应替换为或接入 Redis 等分布式存储。
 
+## GraphQL Abuse Protection
+
+GraphQL 请求有可配置的深度、复杂度和请求体大小限制：
+
+- `AUTH_STARTER_GRAPHQL_MAX_QUERY_DEPTH`
+- `AUTH_STARTER_GRAPHQL_MAX_QUERY_COMPLEXITY`
+- `AUTH_STARTER_GRAPHQL_MAX_REQUEST_BYTES`
+
+GraphiQL 默认关闭。GraphQL introspection 由 `AUTH_STARTER_GRAPHQL_INTROSPECTION_ENABLED` 控制；基础配置关闭 introspection，local/dev 配置为开发启用它。
+
 ## RBAC
 
 Roles 由 `AuthStarterRole` 表示：

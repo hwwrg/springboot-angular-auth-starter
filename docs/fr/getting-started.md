@@ -20,9 +20,9 @@ docker compose up --build
 Cela démarre :
 
 - `postgres` sur `127.0.0.1:5432`
-- `backend` sur le host port `8080`
+- `backend` sur `127.0.0.1:8080`
 
-Le fichier Compose courant définit directement les variables locales du backend. [../../.env.example](../../.env.example) sert de référence pour les valeurs configurables.
+Le fichier Compose définit directement les variables locales du backend et est local-only. [../../.env.example](../../.env.example) fournit des valeurs sûres par défaut. Utiliser [../../.env.local.example](../../.env.local.example) uniquement pour les identifiants de démonstration locaux.
 
 ## Lancer le Frontend
 
@@ -61,6 +61,8 @@ Ces identifiants sont des identifiants de démonstration local-only. Ils sont ac
 - `user@authstarter.local` / `authstarter-local-password` / `USER`
 
 L'authentification break-glass est désactivée par défaut dans `application.yml` ; la configuration locale l'active explicitement pour ces utilisateurs de démonstration.
+
+GraphiQL et l'introspection GraphQL sont activés par la configuration local/dev pour le développement. La configuration de base garde GraphiQL et l'introspection désactivés.
 
 ## Vérifications Utiles
 

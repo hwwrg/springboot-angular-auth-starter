@@ -39,7 +39,7 @@
 docker compose up --build
 ```
 
-后端地址是 `http://localhost:8080`。当前 [docker-compose.yml](./docker-compose.yml) 已直接提供本地后端环境变量；[.env.example](./.env.example) 是可配置变量参考。
+后端地址是 `http://localhost:8080`。[docker-compose.yml](./docker-compose.yml) 将 backend 和 PostgreSQL 端口绑定到 `127.0.0.1`，仅用于本地开发。[.env.example](./.env.example) 提供安全默认值；[.env.local.example](./.env.local.example) 提供 local-only 演示凭据。
 
 单独启动前端：
 
@@ -71,6 +71,8 @@ cd backend
 Break-glass 认证在 [application.yml](./backend/src/main/resources/application.yml) 中默认关闭。local profile 和 Docker Compose 只为本地演示显式启用它。
 
 公开认证 mutations 使用基础的内存 rate limiter。生产或多实例部署应改用或接入 Redis 等分布式存储。
+
+GraphiQL 默认关闭。GraphQL introspection 默认通过 `AUTH_STARTER_GRAPHQL_INTROSPECTION_ENABLED=false` 关闭；local/dev 配置会为开发启用它。
 
 ## API 概览
 

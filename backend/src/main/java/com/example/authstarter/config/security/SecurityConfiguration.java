@@ -2,6 +2,8 @@ package com.example.authstarter.config.security;
 
 import com.example.authstarter.auth.ActiveSessionValidationFilter;
 import com.example.authstarter.auth.BaselineAuthProperties;
+import com.example.authstarter.config.graphql.AuthStarterGraphQlProperties;
+import com.example.authstarter.config.graphql.GraphQlRequestBodySizeFilter;
 import java.util.List;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
@@ -23,7 +26,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableConfigurationProperties({
         BaselineAuthProperties.class,
-        AuthStarterSecurityProperties.class
+        AuthStarterSecurityProperties.class,
+        AuthStarterGraphQlProperties.class
 })
 public class SecurityConfiguration {
 
@@ -32,7 +36,8 @@ public class SecurityConfiguration {
             HttpSecurity http,
             CorsConfigurationSource corsConfigurationSource,
             CsrfTokenRepository csrfTokenRepository,
-            ActiveSessionValidationFilter activeSessionValidationFilter)
+            ActiveSessionValidationFilter activeSessionValidationFilter,
+            GraphQlRequestBodySizeFilter graphQlRequestBodySizeFilter)
             throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
@@ -54,6 +59,7 @@ public class SecurityConfiguration {
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .formLogin(formLogin -> formLogin.disable())
                 .logout(logout -> logout.disable())
+                .addFilterBefore(graphQlRequestBodySizeFilter, CsrfFilter.class)
                 .addFilterAfter(activeSessionValidationFilter, BasicAuthenticationFilter.class)
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
 

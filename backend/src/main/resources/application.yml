@@ -63,6 +63,11 @@ authstarter:
   security:
     allowed-origins:
       - ${AUTH_STARTER_FRONTEND_ORIGIN:http://localhost:4200}
+  graphql:
+    max-query-depth: ${AUTH_STARTER_GRAPHQL_MAX_QUERY_DEPTH:12}
+    max-query-complexity: ${AUTH_STARTER_GRAPHQL_MAX_QUERY_COMPLEXITY:200}
+    max-request-bytes: ${AUTH_STARTER_GRAPHQL_MAX_REQUEST_BYTES:32768}
+    introspection-enabled: ${AUTH_STARTER_GRAPHQL_INTROSPECTION_ENABLED:false}
   notification:
     email:
       provider: ${AUTH_STARTER_NOTIFICATION_EMAIL_PROVIDER:local-mock}

@@ -1,4 +1,7 @@
 authstarter:
+  graphql:
+    # Local developer convenience. Keep disabled in deployed profiles.
+    introspection-enabled: true
   auth:
     baseline:
       # Local-only demo break-glass credentials. Do not use in deployed environments.

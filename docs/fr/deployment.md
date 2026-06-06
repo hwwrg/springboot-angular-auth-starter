@@ -40,11 +40,13 @@ Pour la livraison SMTP, configurer aussi :
 - `AUTH_STARTER_SMTP_AUTH`
 - `AUTH_STARTER_SMTP_START_TLS`
 
-Relire [../../.env.example](../../.env.example) et [../../backend/src/main/resources/application.yml](../../backend/src/main/resources/application.yml) avant de déployer.
+Relire [../../.env.example](../../.env.example) et [../../backend/src/main/resources/application.yml](../../backend/src/main/resources/application.yml) avant de déployer. [../../.env.local.example](../../.env.local.example) est local-only et ne doit pas être utilisé dans un environnement déployé.
 
-L'authentification break-glass est désactivée par défaut. Ne pas déployer les identifiants de démonstration locaux depuis `application-local.yml`, `application-dev.yml`, `.env.example` ou Docker Compose.
+L'authentification break-glass est désactivée par défaut. Ne pas déployer les identifiants de démonstration locaux depuis `application-local.yml`, `application-dev.yml`, `.env.local.example` ou Docker Compose.
 
 Les mutations publiques d'authentification incluent un rate limiter basique en mémoire. En production ou avec plusieurs instances, le remplacer ou l'appuyer sur un stockage distribué comme Redis.
+
+Garder l'introspection GraphQL désactivée dans les profils déployés sauf besoin opérationnel explicite. Configurer les limites de profondeur, complexité et taille de corps avec les variables `AUTH_STARTER_GRAPHQL_*`.
 
 ## Build Frontend
 
@@ -62,6 +64,6 @@ L'environnement de développement pointe actuellement vers `http://localhost:808
 
 [../../docker-compose.yml](../../docker-compose.yml) démarre PostgreSQL et le backend pour le développement local. Ce n'est pas un modèle de déploiement en production.
 
-Le port PostgreSQL du Compose est lié à `127.0.0.1:5432` pour l'usage local.
+Les ports PostgreSQL et backend du Compose sont liés à `127.0.0.1` pour l'usage local.
 
 Avant d'utiliser ce starter dans un système déployé, vérifier cookie security, HTTPS, CORS origins, SMTP, password policy, monitoring, backup, retention et operational access.

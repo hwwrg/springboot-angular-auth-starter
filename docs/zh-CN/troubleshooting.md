@@ -42,6 +42,8 @@
 
 如果重复公开认证请求因为 rate limit 失败，请等待当前窗口过期。生产部署应使用 Redis 等分布式 limiter，而不是内置内存 limiter。
 
+如果 GraphQL 请求因为深度、复杂度、请求体大小或 introspection 错误失败，请检查当前 profile 的 `AUTH_STARTER_GRAPHQL_*` 变量。Local/dev 会为开发工具启用 introspection；基础部署配置会关闭它。
+
 ## 无法访问管理员页面
 
 Frontend admin route 和 backend admin operations 需要 `SUPERADMIN` 或 `ORG_ADMIN`。`USER` role 会被重定向到 not-authorized page。

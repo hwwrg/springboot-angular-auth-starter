@@ -55,6 +55,34 @@ class PublicAuthRateLimiterTests {
                 .isInstanceOf(PublicAuthRateLimitExceededException.class);
     }
 
+    @Test
+    void rejectsNewBucketsWhenHardBucketCapIsReached() {
+        MutableClock clock = new MutableClock();
+        PublicAuthRateLimiter rateLimiter = new PublicAuthRateLimiter(clock, 2);
+
+        rateLimiter.checkEmail(PublicAuthRateLimiter.PublicAuthFlow.LOGIN, "first@example.test");
+        rateLimiter.checkEmail(PublicAuthRateLimiter.PublicAuthFlow.LOGIN, "second@example.test");
+
+        assertThatThrownBy(() ->
+                rateLimiter.checkEmail(PublicAuthRateLimiter.PublicAuthFlow.LOGIN, "third@example.test"))
+                .isInstanceOf(PublicAuthRateLimitExceededException.class);
+    }
+
+    @Test
+    void cleansExpiredBucketsBeforeApplyingHardBucketCap() {
+        MutableClock clock = new MutableClock();
+        PublicAuthRateLimiter rateLimiter = new PublicAuthRateLimiter(clock, 2);
+
+        rateLimiter.checkEmail(PublicAuthRateLimiter.PublicAuthFlow.LOGIN, "first@example.test");
+        rateLimiter.checkEmail(PublicAuthRateLimiter.PublicAuthFlow.LOGIN, "second@example.test");
+
+        clock.advance(Duration.ofMinutes(1));
+
+        assertThatCode(() ->
+                rateLimiter.checkEmail(PublicAuthRateLimiter.PublicAuthFlow.LOGIN, "third@example.test"))
+                .doesNotThrowAnyException();
+    }
+
     private static final class MutableClock extends Clock {
         private Instant instant = Instant.parse("2026-01-01T00:00:00Z");
 

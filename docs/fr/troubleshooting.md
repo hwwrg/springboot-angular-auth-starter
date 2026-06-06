@@ -42,6 +42,8 @@ Ces identifiants sont local-only et nécessitent le profil `local`/`dev` ou Dock
 
 Si des tentatives publiques répétées échouent avec une erreur de rate limit, attendre l'expiration de la fenêtre courante. Les déploiements de production doivent utiliser un limiter distribué comme Redis au lieu du limiter en mémoire intégré.
 
+Si les requêtes GraphQL échouent avec des erreurs de profondeur, complexité, taille de corps ou introspection, vérifier les variables `AUTH_STARTER_GRAPHQL_*` du profil actif. Local/dev active l'introspection pour les outils de développement ; la configuration de base déployée la désactive.
+
 ## Page Admin Inaccessible
 
 La frontend admin route et les backend admin operations demandent `SUPERADMIN` ou `ORG_ADMIN`. Le role `USER` est redirigé vers la not-authorized page.

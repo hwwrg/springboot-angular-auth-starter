@@ -46,6 +46,16 @@ Les mutations publiques d'authentification utilisent un rate limiter basique en 
 
 C'est une protection adaptée à un seul processus backend de starter. En production ou avec plusieurs instances, la remplacer ou l'appuyer sur un stockage distribué comme Redis.
 
+## Protection Contre les Abus GraphQL
+
+Les requêtes GraphQL ont des limites configurables de profondeur, complexité et taille de corps :
+
+- `AUTH_STARTER_GRAPHQL_MAX_QUERY_DEPTH`
+- `AUTH_STARTER_GRAPHQL_MAX_QUERY_COMPLEXITY`
+- `AUTH_STARTER_GRAPHQL_MAX_REQUEST_BYTES`
+
+GraphiQL est désactivé par défaut. L'introspection GraphQL est contrôlée par `AUTH_STARTER_GRAPHQL_INTROSPECTION_ENABLED` ; la configuration de base la désactive, tandis que la configuration local/dev l'active pour le développement.
+
 ## RBAC
 
 Les roles sont représentés par `AuthStarterRole` :

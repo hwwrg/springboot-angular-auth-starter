@@ -46,6 +46,16 @@ Public auth mutations use a basic in-memory fixed-window rate limiter:
 
 This is starter-friendly protection for a single backend process. Production and multi-instance deployments should replace or back it with distributed storage such as Redis.
 
+## GraphQL Abuse Protection
+
+GraphQL requests have configurable depth, complexity, and request body size limits:
+
+- `AUTH_STARTER_GRAPHQL_MAX_QUERY_DEPTH`
+- `AUTH_STARTER_GRAPHQL_MAX_QUERY_COMPLEXITY`
+- `AUTH_STARTER_GRAPHQL_MAX_REQUEST_BYTES`
+
+GraphiQL is disabled by default. GraphQL introspection is controlled with `AUTH_STARTER_GRAPHQL_INTROSPECTION_ENABLED`; base configuration disables introspection, while local/dev configuration enables it for developer use.
+
 ## RBAC
 
 Roles are represented by `AuthStarterRole`:

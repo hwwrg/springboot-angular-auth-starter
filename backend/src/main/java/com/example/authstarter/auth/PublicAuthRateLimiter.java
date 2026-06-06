@@ -16,18 +16,23 @@ public class PublicAuthRateLimiter {
 
     // Starter-friendly single-process limiter. Production multi-instance deployments should use
     // distributed storage such as Redis so attempts are counted consistently across nodes.
-    private static final int MAX_BUCKETS_BEFORE_CLEANUP = 10_000;
-    private static final long MAX_WINDOW_MILLIS = Duration.ofMinutes(15).toMillis();
+    private static final int DEFAULT_MAX_BUCKETS = 10_000;
 
     private final ConcurrentMap<String, Bucket> buckets = new ConcurrentHashMap<>();
     private final Clock clock;
+    private final int maxBuckets;
 
     public PublicAuthRateLimiter() {
-        this(Clock.systemUTC());
+        this(Clock.systemUTC(), DEFAULT_MAX_BUCKETS);
     }
 
     PublicAuthRateLimiter(Clock clock) {
+        this(clock, DEFAULT_MAX_BUCKETS);
+    }
+
+    PublicAuthRateLimiter(Clock clock, int maxBuckets) {
         this.clock = clock;
+        this.maxBuckets = Math.max(1, maxBuckets);
     }
 
     public void checkEmail(PublicAuthFlow flow, String email) {
@@ -42,18 +47,24 @@ public class PublicAuthRateLimiter {
     private void check(PublicAuthFlow flow, String discriminator) {
         long nowMillis = clock.millis();
         String key = flow.name() + ":" + clientAddress() + ":" + discriminator;
+        if (!buckets.containsKey(key)) {
+            cleanupExpiredBuckets(nowMillis);
+            if (buckets.size() >= maxBuckets) {
+                throw new PublicAuthRateLimitExceededException("Too many attempts. Please wait before trying again.");
+            }
+        }
+
         Bucket bucket = buckets.compute(key, (ignored, existing) -> nextBucket(flow, existing, nowMillis));
         if (bucket.count() > flow.maxAttempts()) {
             throw new PublicAuthRateLimitExceededException("Too many attempts. Please wait before trying again.");
         }
-        cleanupExpiredBuckets(nowMillis);
     }
 
     private Bucket nextBucket(PublicAuthFlow flow, Bucket existing, long nowMillis) {
         if (existing == null || nowMillis - existing.windowStartMillis() >= flow.window().toMillis()) {
-            return new Bucket(nowMillis, 1);
+            return new Bucket(nowMillis, 1, flow.window().toMillis());
         }
-        return new Bucket(existing.windowStartMillis(), existing.count() + 1);
+        return new Bucket(existing.windowStartMillis(), existing.count() + 1, existing.windowMillis());
     }
 
     private String clientAddress() {
@@ -73,14 +84,11 @@ public class PublicAuthRateLimiter {
     }
 
     private void cleanupExpiredBuckets(long nowMillis) {
-        if (buckets.size() <= MAX_BUCKETS_BEFORE_CLEANUP) {
-            return;
-        }
         buckets.entrySet().removeIf(entry ->
-                nowMillis - entry.getValue().windowStartMillis() >= MAX_WINDOW_MILLIS);
+                nowMillis - entry.getValue().windowStartMillis() >= entry.getValue().windowMillis());
     }
 
-    private record Bucket(long windowStartMillis, int count) {
+    private record Bucket(long windowStartMillis, int count, long windowMillis) {
     }
 
     public enum PublicAuthFlow {

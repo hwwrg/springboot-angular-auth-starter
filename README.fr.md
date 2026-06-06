@@ -39,7 +39,7 @@ Démarrer PostgreSQL et le backend :
 docker compose up --build
 ```
 
-Le backend écoute sur `http://localhost:8080`. Le fichier [docker-compose.yml](./docker-compose.yml) fournit directement les variables d'environnement locales du backend ; [.env.example](./.env.example) sert de référence pour les variables configurables.
+Le backend écoute sur `http://localhost:8080`. [docker-compose.yml](./docker-compose.yml) lie les ports backend et PostgreSQL à `127.0.0.1` et sert uniquement au développement local. [.env.example](./.env.example) contient des valeurs sûres par défaut ; [.env.local.example](./.env.local.example) contient les identifiants de démonstration local-only.
 
 Démarrer le frontend séparément :
 
@@ -71,6 +71,8 @@ Ces identifiants sont des identifiants de démonstration local-only fournis par 
 L'authentification break-glass est désactivée par défaut dans [application.yml](./backend/src/main/resources/application.yml). Le profil local et Docker Compose l'activent explicitement uniquement pour la démonstration locale.
 
 Les mutations publiques d'authentification utilisent un rate limiter basique en mémoire. En production ou avec plusieurs instances, le remplacer ou l'appuyer sur un stockage distribué comme Redis.
+
+GraphiQL est désactivé par défaut. L'introspection GraphQL est désactivée par défaut avec `AUTH_STARTER_GRAPHQL_INTROSPECTION_ENABLED=false` ; la configuration local/dev l'active pour le développement.
 
 ## Aperçu API
 

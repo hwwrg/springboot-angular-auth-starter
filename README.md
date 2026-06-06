@@ -35,8 +35,9 @@ This project provides a practical baseline for authentication, authorization, us
 
 - [backend](./backend/README.md): Spring Boot application, GraphQL schema, security configuration, Flyway migrations, and tests
 - [frontend](./frontend/README.md): Angular application, auth flows, route guards, GraphQL client, runtime config, and tests
-- [docker-compose.yml](./docker-compose.yml): local PostgreSQL and backend services
-- [.env.example](./.env.example): reference local environment variables
+- [docker-compose.yml](./docker-compose.yml): local-only PostgreSQL and backend services bound to `127.0.0.1`
+- [.env.example](./.env.example): safe reference environment variables
+- [.env.local.example](./.env.local.example): local-only demo credentials and developer settings
 - [Makefile](./Makefile): verification shortcuts for backend and frontend checks
 - [docs/en](./docs/en/README.md): canonical detailed documentation
 - [docs/zh-CN](./docs/zh-CN/README.md): Simplified Chinese documentation
@@ -50,7 +51,7 @@ Start PostgreSQL and the backend with Docker Compose:
 docker compose up --build
 ```
 
-The backend runs at `http://localhost:8080`. The Compose file supplies local backend environment values directly. Use [.env.example](./.env.example) as the reference list of configurable variables.
+The backend runs at `http://localhost:8080`. Docker Compose binds backend and PostgreSQL ports to `127.0.0.1` and is intended only for local development. Use [.env.example](./.env.example) for safe defaults and [.env.local.example](./.env.local.example) only for local demo credentials.
 
 Run the frontend separately:
 
@@ -143,6 +144,10 @@ Important backend variables:
 - `AUTH_STARTER_BASELINE_AUTH_DISPLAY_NAME`
 - `AUTH_STARTER_BASELINE_AUTH_ROLE`
 - `AUTH_STARTER_BASELINE_AUTH_BREAK_GLASS_ENABLED`
+- `AUTH_STARTER_GRAPHQL_MAX_QUERY_DEPTH`
+- `AUTH_STARTER_GRAPHQL_MAX_QUERY_COMPLEXITY`
+- `AUTH_STARTER_GRAPHQL_MAX_REQUEST_BYTES`
+- `AUTH_STARTER_GRAPHQL_INTROSPECTION_ENABLED`
 - `AUTH_STARTER_NOTIFICATION_EMAIL_PROVIDER`
 - `AUTH_STARTER_SMTP_HOST`
 - `AUTH_STARTER_SMTP_PORT`
@@ -150,6 +155,8 @@ Important backend variables:
 Use `AUTH_STARTER_NOTIFICATION_EMAIL_PROVIDER=local-mock` for local development without a mail server. Use `smtp` with the SMTP variables in [.env.example](./.env.example) for a local mail catcher or SMTP service.
 
 Public auth mutations have a basic in-memory rate limiter. For production or multi-instance deployments, replace or back it with distributed storage such as Redis.
+
+GraphiQL is disabled by default. GraphQL introspection is disabled by default through `AUTH_STARTER_GRAPHQL_INTROSPECTION_ENABLED=false`; local/dev configuration enables it for developer use.
 
 The frontend development environment points to:
 

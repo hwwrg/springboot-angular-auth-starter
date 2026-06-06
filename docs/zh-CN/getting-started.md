@@ -20,9 +20,9 @@ docker compose up --build
 这会启动：
 
 - `postgres`，`127.0.0.1:5432`
-- `backend`，host port `8080`
+- `backend`，`127.0.0.1:8080`
 
-当前 Compose 文件会直接设置本地后端变量。[../../.env.example](../../.env.example) 是可配置项的参考。
+Compose 文件会直接设置本地后端变量，并且仅用于本地开发。[../../.env.example](../../.env.example) 提供安全默认值。只有需要本地演示凭据时才使用 [../../.env.local.example](../../.env.local.example)。
 
 ## 运行前端
 
@@ -61,6 +61,8 @@ cd backend
 - `user@authstarter.local` / `authstarter-local-password` / `USER`
 
 Break-glass 认证在 `application.yml` 中默认关闭；本地配置只为这些演示用户显式启用它。
+
+GraphiQL 和 GraphQL introspection 由 local/dev 配置为开发启用。基础配置保持 GraphiQL 和 introspection 关闭。
 
 ## 常用检查
 
