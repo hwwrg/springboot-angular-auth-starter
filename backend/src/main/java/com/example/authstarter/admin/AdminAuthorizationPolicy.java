@@ -49,6 +49,10 @@ final class AdminAuthorizationPolicy {
             throw new AccessDeniedException("ORG_ADMIN cannot assign the ORG_ADMIN role.");
         }
         if (isOrganizationAdminOnly(principal, currentOrganization)
+                && primaryMembershipChanged(existing, primaryMembership)) {
+            throw new AccessDeniedException("ORG_ADMIN cannot change primary membership.");
+        }
+        if (isOrganizationAdminOnly(principal, currentOrganization)
                 && userId.equals(principalUserId(principal))
                 && administrativeContextChanged(existing, role, userStatus, membershipStatus, primaryMembership)) {
             throw new AccessDeniedException("ORG_ADMIN cannot modify their own administrative context.");
@@ -65,6 +69,10 @@ final class AdminAuthorizationPolicy {
                 || !existing.status().equals(userStatus)
                 || !existing.membershipStatus().equals(membershipStatus)
                 || existing.primaryMembership() != primaryMembership;
+    }
+
+    private boolean primaryMembershipChanged(AdminUserSummaryPayload existing, boolean primaryMembership) {
+        return existing.primaryMembership() != primaryMembership;
     }
 
     private boolean isSuperAdmin(AuthPrincipal principal, OrganizationContextPayload currentOrganization) {

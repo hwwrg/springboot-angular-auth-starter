@@ -195,7 +195,7 @@ class JdbcAdminManagementService implements AdminManagementService {
             throw new IllegalArgumentException("User must belong to the active current organization context.");
         }
 
-        if (validated.primaryMembership()) {
+        if (validated.primaryMembership() && !existing.primaryMembership()) {
             jdbcClient.sql("""
                             update organization_memberships
                                set primary_membership = false,

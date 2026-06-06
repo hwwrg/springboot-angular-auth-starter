@@ -131,12 +131,40 @@ class AdminAuthorizationPolicyTests {
                 "SUSPENDED",
                 true))
                 .isInstanceOf(AccessDeniedException.class);
+    }
+
+    @Test
+    void organizationAdminCannotChangeOwnPrimaryMembership() {
         assertThatThrownBy(() -> policy.authorizeUpdate(
                 principal(ORG_ADMIN_ID, "ORG_ADMIN"),
                 organization("ORG_ADMIN"),
                 ORG_ADMIN_ID,
                 user(ORG_ADMIN_ID, "ORG_ADMIN", "ACTIVE", "ACTIVE", true),
                 "ORG_ADMIN",
+                "ACTIVE",
+                "ACTIVE",
+                false))
+                .isInstanceOf(AccessDeniedException.class);
+    }
+
+    @Test
+    void organizationAdminCannotChangeAnotherUsersPrimaryMembership() {
+        assertThatThrownBy(() -> policy.authorizeUpdate(
+                principal(ORG_ADMIN_ID, "ORG_ADMIN"),
+                organization("ORG_ADMIN"),
+                USER_ID,
+                user(USER_ID, "USER", "ACTIVE", "ACTIVE", false),
+                "USER",
+                "ACTIVE",
+                "ACTIVE",
+                true))
+                .isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> policy.authorizeUpdate(
+                principal(ORG_ADMIN_ID, "ORG_ADMIN"),
+                organization("ORG_ADMIN"),
+                USER_ID,
+                user(USER_ID, "USER", "ACTIVE", "ACTIVE", true),
+                "USER",
                 "ACTIVE",
                 "ACTIVE",
                 false))
@@ -158,6 +186,20 @@ class AdminAuthorizationPolicyTests {
     }
 
     @Test
+    void organizationAdminCanUpdateUserDisplayNameWhenPrimaryMembershipIsUnchanged() {
+        assertThatCode(() -> policy.authorizeUpdate(
+                principal(ORG_ADMIN_ID, "ORG_ADMIN"),
+                organization("ORG_ADMIN"),
+                USER_ID,
+                user(USER_ID, "USER", "ACTIVE", "ACTIVE", true),
+                "USER",
+                "ACTIVE",
+                "ACTIVE",
+                true))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
     void superadminCanAssignAndModifySuperadminUsers() {
         assertThatCode(() -> policy.authorizeCreate(
                 principal(SUPERADMIN_ID, "SUPERADMIN"),
@@ -170,6 +212,20 @@ class AdminAuthorizationPolicyTests {
                 USER_ID,
                 user(USER_ID, "USER", "ACTIVE", "ACTIVE"),
                 "SUPERADMIN",
+                "ACTIVE",
+                "ACTIVE",
+                true))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void superadminCanChangePrimaryMembership() {
+        assertThatCode(() -> policy.authorizeUpdate(
+                principal(SUPERADMIN_ID, "SUPERADMIN"),
+                organization("USER"),
+                USER_ID,
+                user(USER_ID, "USER", "ACTIVE", "ACTIVE", false),
+                "USER",
                 "ACTIVE",
                 "ACTIVE",
                 true))
