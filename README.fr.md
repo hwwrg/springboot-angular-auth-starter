@@ -28,7 +28,7 @@ Le projet fournit une base pratique pour l'authentification, l'autorisation, la 
 
 - Backend : Java 21, Spring Boot 3.5.14, Spring Security, Spring GraphQL, JDBC, Flyway
 - Base de données : PostgreSQL 16 dans Docker Compose local
-- Frontend : Angular 20.2, Apollo Angular, RxJS, lucide-angular
+- Frontend : Angular 20.3, Apollo Angular, RxJS, lucide-angular
 - Outils : Gradle wrapper, Node 22.14.0, pnpm 10.6.5, Docker Compose
 
 ## Installation Locale

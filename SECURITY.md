@@ -4,9 +4,13 @@
 
 This starter is pre-1.0. Security fixes are applied to the current default branch.
 
-## Reporting A Vulnerability
+## Reporting a Vulnerability
 
-Do not open a public issue for a suspected vulnerability. Email the maintainer or project owner listed for your fork/distribution, or use the private advisory workflow if this repository is hosted on GitHub.
+Do not open a public issue for a suspected vulnerability.
+
+**Preferred:** Use [GitHub private security advisories](https://github.com/woodyhua/springboot-angular-auth-starter/security/advisories/new) to report confidentially.
+
+**Alternative:** Email the maintainer or project owner listed for your fork or distribution.
 
 Include:
 
@@ -14,6 +18,8 @@ Include:
 - Reproduction steps
 - Impact assessment
 - Any relevant logs with secrets removed
+
+We aim to acknowledge reports within 5 business days.
 
 ## Security Notes
 
