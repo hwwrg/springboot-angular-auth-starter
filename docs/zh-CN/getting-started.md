@@ -19,7 +19,7 @@ docker compose up --build
 
 这会启动：
 
-- `postgres`，`127.0.0.1:5432`
+- `db`，`127.0.0.1:5432`
 - `backend`，`127.0.0.1:8080`
 
 Compose 文件会直接设置本地后端变量，并且仅用于本地开发。[../../.env.example](../../.env.example) 提供安全默认值。只有需要本地演示凭据时才使用 [../../.env.local.example](../../.env.local.example)。
