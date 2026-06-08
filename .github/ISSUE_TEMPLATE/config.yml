@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/woodyhua/springboot-angular-auth-starter/security/advisories/new
+    about: Please report security issues privately, not as public issues. See SECURITY.md.
+  - name: Questions and documentation
+    url: https://github.com/woodyhua/springboot-angular-auth-starter/blob/main/docs/en/README.md
+    about: Read the documentation before opening a question issue.
