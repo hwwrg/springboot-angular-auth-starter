@@ -51,3 +51,5 @@ logs/
 .project
 .classpath
 .settings/
+
+# Local developer tool configuration
