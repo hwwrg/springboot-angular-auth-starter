@@ -20,6 +20,8 @@ This English README is the source of truth for the repository documentation. Tra
 
 This project provides a practical baseline for authentication, authorization, user lifecycle management, invitations, password setup and reset, and account notification history. It is intended as a starter, not a complete deployed identity platform.
 
+**Who is this for?** Developers and teams who want a working, opinionated full-stack auth foundation — with server-side sessions, CSRF protection, RBAC, and PostgreSQL — and who intend to extend it for their own application rather than build these flows from scratch.
+
 ## Features
 
 - Spring Boot backend with Spring Security, Spring GraphQL, JDBC, Flyway, and PostgreSQL
@@ -38,7 +40,7 @@ This project provides a practical baseline for authentication, authorization, us
 
 - Backend: Java 21, Spring Boot 3.5.14, Spring Security, Spring GraphQL, JDBC, Flyway
 - Database: PostgreSQL 16 in local Docker Compose
-- Frontend: Angular 20.2, Apollo Angular, RxJS, lucide-angular
+- Frontend: Angular 20.3, Apollo Angular, RxJS, lucide-angular
 - Tooling: Gradle wrapper, Node 22.14.0, pnpm 10.6.5, Docker Compose
 
 ## Project Layout
@@ -61,7 +63,13 @@ Start PostgreSQL and the backend with Docker Compose:
 docker compose up --build
 ```
 
-The backend runs at `http://localhost:8080`. Docker Compose binds backend and PostgreSQL ports to `127.0.0.1` and is intended only for local development. Compose explicitly sets `SPRING_PROFILES_ACTIVE=local` for demo credentials; the backend Docker image itself does not default to the local profile. Use [.env.example](./.env.example) for safe defaults and [.env.local.example](./.env.local.example) only for local demo credentials.
+The backend runs at `http://localhost:8080`. Verify it is up:
+
+```sh
+curl http://localhost:8080/actuator/health/readiness
+```
+
+Docker Compose binds backend and PostgreSQL ports to `127.0.0.1` and is intended only for local development. Compose explicitly sets `SPRING_PROFILES_ACTIVE=local` for demo credentials; the backend Docker image itself does not default to the local profile. Use [.env.example](./.env.example) for safe defaults and [.env.local.example](./.env.local.example) only for local demo credentials.
 
 Run the frontend separately:
 

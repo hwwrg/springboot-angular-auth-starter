@@ -16,10 +16,11 @@ Good contributions include:
 
 ## Getting started
 
-1. Fork the repository and create a branch from `main`.
-2. Follow the local setup in the [README](./README.md#local-setup).
-3. Make your changes in a focused, single-purpose branch.
-4. Run the relevant verification commands before opening a PR.
+1. For significant changes, open an issue first to discuss your approach before writing code.
+2. Fork the repository and create a branch from `main`.
+3. Follow the local setup in the [README](./README.md#local-setup).
+4. Make your changes in a focused, single-purpose branch.
+5. Run the relevant verification commands before opening a PR.
 
 ## Development
 

@@ -28,7 +28,7 @@
 
 - 后端：Java 21、Spring Boot 3.5.14、Spring Security、Spring GraphQL、JDBC、Flyway
 - 数据库：本地 Docker Compose 中的 PostgreSQL 16
-- 前端：Angular 20.2、Apollo Angular、RxJS、lucide-angular
+- 前端：Angular 20.3、Apollo Angular、RxJS、lucide-angular
 - 工具：Gradle wrapper、Node 22.14.0、pnpm 10.6.5、Docker Compose
 
 ## 本地运行
