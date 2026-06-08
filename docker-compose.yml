@@ -1,5 +1,5 @@
 services:
-  postgres:
+  db:
     image: postgres:16-alpine
     container_name: authstarter-postgres
     environment:
@@ -21,11 +21,11 @@ services:
       context: ./backend
     container_name: authstarter-backend
     depends_on:
-      postgres:
+      db:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: local
-      AUTH_STARTER_DATASOURCE_URL: jdbc:postgresql://postgres:5432/authstarter
+      AUTH_STARTER_DATASOURCE_URL: jdbc:postgresql://db:5432/authstarter
       AUTH_STARTER_DATASOURCE_USERNAME: authstarter
       AUTH_STARTER_DATASOURCE_PASSWORD: authstarter
       AUTH_STARTER_FRONTEND_ORIGIN: http://localhost:4200
