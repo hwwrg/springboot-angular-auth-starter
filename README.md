@@ -6,6 +6,12 @@ Reusable open-source starter for a Spring Boot authentication backend and Angula
 
 This English README is the source of truth for the repository documentation. Translations should be updated from this file.
 
+## Screenshots
+
+| Login | Admin — User Management | Account &amp; Profile |
+|---|---|---|
+| ![Login page](./docs/screenshots/01-login.svg) | ![Admin user management](./docs/screenshots/02-admin.svg) | ![Account page](./docs/screenshots/03-account.svg) |
+
 ## Purpose
 
 This project provides a practical baseline for authentication, authorization, user lifecycle management, invitations, password setup and reset, and account notification history. It is intended as a starter, not a complete deployed identity platform.

@@ -1,0 +1,141 @@
+<svg viewBox="0 0 1280 800" xmlns="http://www.w3.org/2000/svg" font-family="Inter, system-ui, sans-serif">
+  <defs>
+    <radialGradient id="gold-glow2" cx="100%" cy="0%" r="50%">
+      <stop offset="0%" stop-color="#c7a86a" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#c7a86a" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="800" fill="#12151c" />
+  <rect width="1280" height="800" fill="url(#gold-glow2)" />
+
+  <!-- Sidebar -->
+  <rect x="0" y="0" width="272" height="800" fill="#0e1119" />
+  <line x1="272" y1="0" x2="272" y2="800" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+
+  <!-- Sidebar brand -->
+  <rect x="20" y="20" width="36" height="36" rx="9" fill="#c7a86a" />
+  <text x="38" y="43" text-anchor="middle" fill="#16110a" font-size="18" font-weight="800">A</text>
+  <text x="66" y="37" fill="#f7f8fb" font-size="15" font-weight="800">Auth Starter</text>
+  <text x="66" y="52" fill="#9ba3b7" font-size="10" letter-spacing="0.08em">WORKSPACE</text>
+
+  <!-- Sidebar nav items -->
+  <rect x="12" y="90" width="248" height="38" rx="8" fill="rgba(255,255,255,0.04)" />
+  <text x="44" y="114" fill="#9ba3b7" font-size="13">Dashboard</text>
+
+  <text x="20" y="160" fill="#9ba3b7" font-size="10" letter-spacing="0.08em">ADMIN</text>
+  <!-- Active nav item -->
+  <rect x="12" y="168" width="248" height="38" rx="8" fill="rgba(199,168,106,0.12)" />
+  <rect x="12" y="168" width="3" height="38" rx="2" fill="#c7a86a" />
+  <text x="44" y="192" fill="#c7a86a" font-size="13" font-weight="600">User Management</text>
+
+  <rect x="12" y="214" width="248" height="38" rx="8" fill="rgba(255,255,255,0.0)" />
+  <text x="44" y="238" fill="#9ba3b7" font-size="13">Account</text>
+
+  <!-- Sidebar footer -->
+  <rect x="12" y="730" width="248" height="50" rx="8" fill="rgba(255,255,255,0.04)" />
+  <circle cx="36" cy="755" r="14" fill="#202635" />
+  <text x="36" y="760" text-anchor="middle" fill="#c7a86a" font-size="13" font-weight="700">O</text>
+  <text x="56" y="750" fill="#f7f8fb" font-size="12" font-weight="600">Operator</text>
+  <text x="56" y="765" fill="#9ba3b7" font-size="11">SUPERADMIN</text>
+
+  <!-- Main content area -->
+  <!-- Page hero -->
+  <text x="304" y="68" fill="#9ba3b7" font-size="12" letter-spacing="0.08em">USER MANAGEMENT</text>
+  <text x="304" y="102" fill="#f7f8fb" font-size="28" font-weight="700">Account lifecycle</text>
+  <text x="304" y="130" fill="#9ba3b7" font-size="14">Create invited users, adjust roles, and inspect account email delivery.</text>
+
+  <!-- SUPERADMIN badge -->
+  <rect x="1100" y="68" width="140" height="28" rx="14" fill="rgba(61,177,137,0.15)" stroke="rgba(61,177,137,0.3)" stroke-width="1" />
+  <circle cx="1118" cy="82" r="4" fill="#3db189" />
+  <text x="1130" y="87" fill="#3db189" font-size="12" font-weight="600">SUPERADMIN</text>
+
+  <!-- Context strip -->
+  <rect x="304" y="154" width="950" height="64" rx="10" fill="#181d27" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+  <text x="328" y="178" fill="#9ba3b7" font-size="11">Organization</text>
+  <text x="328" y="198" fill="#f7f8fb" font-size="14" font-weight="600">Auth Starter Demo</text>
+  <line x1="488" y1="164" x2="488" y2="208" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+  <text x="508" y="178" fill="#9ba3b7" font-size="11">Boundary</text>
+  <text x="508" y="198" fill="#f7f8fb" font-size="14" font-weight="600">authstarter</text>
+  <line x1="648" y1="164" x2="648" y2="208" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+  <text x="668" y="178" fill="#9ba3b7" font-size="11">Users</text>
+  <text x="668" y="198" fill="#f7f8fb" font-size="14" font-weight="600">3</text>
+  <line x1="748" y1="164" x2="748" y2="208" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+  <text x="768" y="178" fill="#9ba3b7" font-size="11">Email events</text>
+  <text x="768" y="198" fill="#f7f8fb" font-size="14" font-weight="600">5</text>
+
+  <!-- Invite user form -->
+  <rect x="304" y="234" width="420" height="340" rx="10" fill="#181d27" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+  <text x="328" y="268" fill="#f7f8fb" font-size="18" font-weight="700">Invite user</text>
+  <rect x="760" y="246" width="60" height="30" rx="8" fill="#202635" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+  <text x="790" y="266" text-anchor="middle" fill="#f7f8fb" font-size="13">New</text>
+
+  <text x="328" y="308" fill="#9ba3b7" font-size="12">Creating a user sends an invitation through the local mock provider.</text>
+
+  <text x="328" y="340" fill="#f7f8fb" font-size="13" font-weight="500">Email</text>
+  <rect x="328" y="350" width="372" height="38" rx="7" fill="#202635" stroke="rgba(255,255,255,0.14)" stroke-width="1" />
+  <text x="344" y="374" fill="#9ba3b7" font-size="13">new-user@example.com</text>
+
+  <text x="328" y="408" fill="#f7f8fb" font-size="13" font-weight="500">Display name</text>
+  <rect x="328" y="418" width="372" height="38" rx="7" fill="#202635" stroke="rgba(255,255,255,0.14)" stroke-width="1" />
+  <text x="344" y="442" fill="#9ba3b7" font-size="13">New User</text>
+
+  <!-- Status + Role pair -->
+  <text x="328" y="476" fill="#f7f8fb" font-size="13" font-weight="500">Status</text>
+  <rect x="328" y="486" width="174" height="38" rx="7" fill="#202635" stroke="rgba(255,255,255,0.14)" stroke-width="1" />
+  <text x="344" y="510" fill="#f7f8fb" font-size="13">INVITED</text>
+  <text x="526" y="476" fill="#f7f8fb" font-size="13" font-weight="500">Role</text>
+  <rect x="526" y="486" width="174" height="38" rx="7" fill="#202635" stroke="rgba(255,255,255,0.14)" stroke-width="1" />
+  <text x="542" y="510" fill="#f7f8fb" font-size="13">USER</text>
+
+  <!-- Save button -->
+  <rect x="328" y="540" width="372" height="42" rx="8" fill="#c7a86a" />
+  <text x="514" y="566" text-anchor="middle" fill="#16110a" font-size="14" font-weight="700">Save user</text>
+
+  <!-- User list -->
+  <text x="754" y="268" fill="#f7f8fb" font-size="18" font-weight="700">Users</text>
+  <text x="1210" y="268" text-anchor="end" fill="#9ba3b7" font-size="13">3 total</text>
+
+  <!-- User rows -->
+  <rect x="754" y="280" width="500" height="62" rx="8" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+  <text x="774" y="305" fill="#f7f8fb" font-size="14" font-weight="600">Operator</text>
+  <text x="774" y="325" fill="#9ba3b7" font-size="12">operator@authstarter.local</text>
+  <rect x="1060" y="290" width="88" height="24" rx="12" fill="rgba(255,255,255,0.06)" />
+  <text x="1104" y="307" text-anchor="middle" fill="#9ba3b7" font-size="11" font-weight="600">SUPERADMIN</text>
+  <rect x="1158" y="290" width="66" height="24" rx="12" fill="rgba(61,177,137,0.15)" />
+  <text x="1191" y="307" text-anchor="middle" fill="#3db189" font-size="11" font-weight="600">ACTIVE</text>
+
+  <rect x="754" y="350" width="500" height="62" rx="8" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+  <text x="774" y="375" fill="#f7f8fb" font-size="14" font-weight="600">Org Admin</text>
+  <text x="774" y="395" fill="#9ba3b7" font-size="12">org-admin@authstarter.local</text>
+  <rect x="1068" y="360" width="74" height="24" rx="12" fill="rgba(255,255,255,0.06)" />
+  <text x="1105" y="377" text-anchor="middle" fill="#9ba3b7" font-size="11" font-weight="600">ORG_ADMIN</text>
+  <rect x="1158" y="360" width="66" height="24" rx="12" fill="rgba(61,177,137,0.15)" />
+  <text x="1191" y="377" text-anchor="middle" fill="#3db189" font-size="11" font-weight="600">ACTIVE</text>
+
+  <rect x="754" y="420" width="500" height="62" rx="8" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+  <text x="774" y="445" fill="#f7f8fb" font-size="14" font-weight="600">User</text>
+  <text x="774" y="465" fill="#9ba3b7" font-size="12">user@authstarter.local</text>
+  <rect x="1120" y="430" width="34" height="24" rx="12" fill="rgba(255,255,255,0.06)" />
+  <text x="1137" y="447" text-anchor="middle" fill="#9ba3b7" font-size="11" font-weight="600">USER</text>
+  <rect x="1158" y="430" width="66" height="24" rx="12" fill="rgba(61,177,137,0.15)" />
+  <text x="1191" y="447" text-anchor="middle" fill="#3db189" font-size="11" font-weight="600">ACTIVE</text>
+
+  <!-- Recent notifications heading -->
+  <text x="754" y="516" fill="#f7f8fb" font-size="18" font-weight="700">Recent account notifications</text>
+  <text x="1210" y="516" text-anchor="end" fill="#9ba3b7" font-size="13">5 events</text>
+
+  <!-- Notification rows -->
+  <rect x="754" y="528" width="500" height="52" rx="8" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+  <text x="774" y="549" fill="#f7f8fb" font-size="13" font-weight="600">USER_INVITE</text>
+  <text x="774" y="568" fill="#9ba3b7" font-size="12">Org Admin · org-admin@authstarter.local</text>
+  <rect x="1158" y="538" width="40" height="24" rx="12" fill="rgba(61,177,137,0.15)" />
+  <text x="1178" y="555" text-anchor="middle" fill="#3db189" font-size="11" font-weight="600">SENT</text>
+
+  <rect x="754" y="588" width="500" height="52" rx="8" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+  <text x="774" y="609" fill="#f7f8fb" font-size="13" font-weight="600">PASSWORD_RESET</text>
+  <text x="774" y="628" fill="#9ba3b7" font-size="12">User · user@authstarter.local</text>
+  <rect x="1158" y="598" width="40" height="24" rx="12" fill="rgba(61,177,137,0.15)" />
+  <text x="1178" y="615" text-anchor="middle" fill="#3db189" font-size="11" font-weight="600">SENT</text>
+</svg>
