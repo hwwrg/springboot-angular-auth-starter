@@ -2,6 +2,10 @@
 
 # Spring Boot Angular Auth Starter
 
+[![Backend CI](https://github.com/woodyhua/springboot-angular-auth-starter/actions/workflows/backend.yml/badge.svg)](https://github.com/woodyhua/springboot-angular-auth-starter/actions/workflows/backend.yml)
+[![Frontend CI](https://github.com/woodyhua/springboot-angular-auth-starter/actions/workflows/frontend.yml/badge.svg)](https://github.com/woodyhua/springboot-angular-auth-starter/actions/workflows/frontend.yml)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](./LICENSE)
+
 Reusable open-source starter for a Spring Boot authentication backend and Angular authentication frontend. It uses server-side sessions, CSRF protection, PostgreSQL persistence, GraphQL, and role-based access control as the default full-stack integration model.
 
 This English README is the source of truth for the repository documentation. Translations should be updated from this file.
@@ -226,6 +230,24 @@ npx -y pnpm@10.6.5 run frontend:lint
 - The backend Docker image starts with safe base defaults unless `SPRING_PROFILES_ACTIVE` is explicitly provided.
 - The starter does not include application-specific business workflows.
 - The starter does not currently include a separate frontend container image.
+
+## Roadmap
+
+Planned improvements (contributions welcome):
+
+- Frontend container image and a single-command full-stack Compose setup
+- OAuth2 / OpenID Connect login support
+- Refresh token or sliding session support
+- Frontend end-to-end tests (Playwright or Cypress)
+- Helm chart or example Kubernetes manifests
+- Rate limiting backed by Redis for multi-instance deployments
+- Email provider plugins beyond SMTP (SendGrid, Mailgun)
+
+Open an issue to discuss a contribution before starting significant work.
+
+## Support
+
+See [SUPPORT.md](./SUPPORT.md) for how to ask questions, report bugs, and request features.
 
 ## License
 
