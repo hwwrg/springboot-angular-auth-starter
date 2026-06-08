@@ -1,0 +1,119 @@
+<svg viewBox="0 0 1280 800" xmlns="http://www.w3.org/2000/svg" font-family="Inter, system-ui, sans-serif">
+  <defs>
+    <radialGradient id="gold-glow3" cx="100%" cy="0%" r="50%">
+      <stop offset="0%" stop-color="#c7a86a" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#c7a86a" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="800" fill="#12151c" />
+  <rect width="1280" height="800" fill="url(#gold-glow3)" />
+
+  <!-- Sidebar -->
+  <rect x="0" y="0" width="272" height="800" fill="#0e1119" />
+  <line x1="272" y1="0" x2="272" y2="800" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+
+  <!-- Sidebar brand -->
+  <rect x="20" y="20" width="36" height="36" rx="9" fill="#c7a86a" />
+  <text x="38" y="43" text-anchor="middle" fill="#16110a" font-size="18" font-weight="800">A</text>
+  <text x="66" y="37" fill="#f7f8fb" font-size="15" font-weight="800">Auth Starter</text>
+  <text x="66" y="52" fill="#9ba3b7" font-size="10" letter-spacing="0.08em">WORKSPACE</text>
+
+  <!-- Sidebar nav -->
+  <rect x="12" y="90" width="248" height="38" rx="8" fill="rgba(255,255,255,0.04)" />
+  <text x="44" y="114" fill="#9ba3b7" font-size="13">Dashboard</text>
+
+  <text x="20" y="160" fill="#9ba3b7" font-size="10" letter-spacing="0.08em">ADMIN</text>
+  <rect x="12" y="168" width="248" height="38" rx="8" />
+  <text x="44" y="192" fill="#9ba3b7" font-size="13">User Management</text>
+
+  <!-- Active: Account -->
+  <rect x="12" y="214" width="248" height="38" rx="8" fill="rgba(199,168,106,0.12)" />
+  <rect x="12" y="214" width="3" height="38" rx="2" fill="#c7a86a" />
+  <text x="44" y="238" fill="#c7a86a" font-size="13" font-weight="600">Account</text>
+
+  <!-- Sidebar footer -->
+  <rect x="12" y="730" width="248" height="50" rx="8" fill="rgba(255,255,255,0.04)" />
+  <circle cx="36" cy="755" r="14" fill="#202635" />
+  <text x="36" y="760" text-anchor="middle" fill="#c7a86a" font-size="13" font-weight="700">O</text>
+  <text x="56" y="750" fill="#f7f8fb" font-size="12" font-weight="600">Operator</text>
+  <text x="56" y="765" fill="#9ba3b7" font-size="11">SUPERADMIN</text>
+
+  <!-- Page hero -->
+  <text x="304" y="68" fill="#9ba3b7" font-size="12" letter-spacing="0.08em">MY ACCOUNT</text>
+  <text x="304" y="102" fill="#f7f8fb" font-size="28" font-weight="700">Account &amp; profile</text>
+  <text x="304" y="130" fill="#9ba3b7" font-size="14">View your session context, organization membership, and manage your password.</text>
+
+  <!-- Row 1: two context panels -->
+  <!-- User context panel -->
+  <rect x="304" y="154" width="454" height="190" rx="10" fill="#181d27" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+  <text x="328" y="184" fill="#9ba3b7" font-size="11" letter-spacing="0.08em">USER CONTEXT</text>
+  <text x="328" y="212" fill="#f7f8fb" font-size="20" font-weight="700">Operator</text>
+  <rect x="666" y="166" width="58" height="24" rx="12" fill="rgba(61,177,137,0.15)" />
+  <circle cx="682" cy="178" r="4" fill="#3db189" />
+  <text x="696" y="183" fill="#3db189" font-size="11" font-weight="600">ACTIVE</text>
+  <line x1="328" y1="232" x2="734" y2="232" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+  <text x="328" y="256" fill="#9ba3b7" font-size="12">Email</text>
+  <text x="328" y="274" fill="#f7f8fb" font-size="14">operator@authstarter.local</text>
+  <text x="328" y="304" fill="#9ba3b7" font-size="12">Roles</text>
+  <text x="328" y="322" fill="#f7f8fb" font-size="14">SUPERADMIN</text>
+
+  <!-- Org context panel -->
+  <rect x="774" y="154" width="480" height="190" rx="10" fill="#181d27" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+  <text x="798" y="184" fill="#9ba3b7" font-size="11" letter-spacing="0.08em">ORGANIZATION CONTEXT</text>
+  <text x="798" y="212" fill="#f7f8fb" font-size="20" font-weight="700">Auth Starter Demo</text>
+  <rect x="1132" y="166" width="82" height="24" rx="12" fill="rgba(61,177,137,0.15)" />
+  <circle cx="1148" cy="178" r="4" fill="#3db189" />
+  <text x="1162" y="183" fill="#3db189" font-size="11" font-weight="600">ACTIVE</text>
+  <line x1="798" y1="232" x2="1234" y2="232" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+  <text x="798" y="256" fill="#9ba3b7" font-size="12">Workspace</text>
+  <text x="798" y="274" fill="#f7f8fb" font-size="14">authstarter</text>
+  <text x="798" y="304" fill="#9ba3b7" font-size="12">Organization role</text>
+  <text x="798" y="322" fill="#f7f8fb" font-size="14">SUPERADMIN</text>
+
+  <!-- Row 2: Password panel + Memberships panel -->
+  <!-- Password panel -->
+  <rect x="304" y="360" width="454" height="400" rx="10" fill="#181d27" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+  <text x="328" y="390" fill="#9ba3b7" font-size="11" letter-spacing="0.08em">SECURITY</text>
+  <text x="328" y="418" fill="#f7f8fb" font-size="20" font-weight="700">Change password</text>
+  <text x="328" y="444" fill="#9ba3b7" font-size="13">Update your login password at any time.</text>
+
+  <text x="328" y="476" fill="#f7f8fb" font-size="13" font-weight="500">Current password</text>
+  <rect x="328" y="486" width="406" height="40" rx="7" fill="#202635" stroke="rgba(255,255,255,0.14)" stroke-width="1" />
+  <text x="344" y="511" fill="#9ba3b7" font-size="14">••••••••••••</text>
+  <circle cx="712" cy="506" r="8" fill="none" stroke="#9ba3b7" stroke-width="1.5" />
+  <circle cx="712" cy="506" r="2.5" fill="#9ba3b7" />
+
+  <text x="328" y="548" fill="#f7f8fb" font-size="13" font-weight="500">New password</text>
+  <rect x="328" y="558" width="406" height="40" rx="7" fill="#202635" stroke="rgba(255,255,255,0.14)" stroke-width="1" />
+  <text x="344" y="583" fill="#9ba3b7" font-size="14">••••••••••••••••</text>
+
+  <text x="328" y="620" fill="#f7f8fb" font-size="13" font-weight="500">Confirm new password</text>
+  <rect x="328" y="630" width="406" height="40" rx="7" fill="#202635" stroke="rgba(255,255,255,0.14)" stroke-width="1" />
+  <text x="344" y="655" fill="#9ba3b7" font-size="14">••••••••••••••••</text>
+
+  <rect x="328" y="688" width="406" height="42" rx="8" fill="#c7a86a" />
+  <text x="531" y="714" text-anchor="middle" fill="#16110a" font-size="14" font-weight="700">Update password</text>
+
+  <!-- Memberships panel -->
+  <rect x="774" y="360" width="480" height="400" rx="10" fill="#181d27" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+  <text x="798" y="390" fill="#9ba3b7" font-size="11" letter-spacing="0.08em">ACCESS</text>
+  <text x="798" y="418" fill="#f7f8fb" font-size="20" font-weight="700">Organization memberships</text>
+  <text x="798" y="444" fill="#9ba3b7" font-size="13">All organizations you belong to in this workspace.</text>
+
+  <!-- Membership table header -->
+  <rect x="798" y="460" width="436" height="32" rx="6" fill="rgba(255,255,255,0.04)" />
+  <text x="814" y="481" fill="#9ba3b7" font-size="12" font-weight="500">Organization</text>
+  <text x="968" y="481" fill="#9ba3b7" font-size="12" font-weight="500">Workspace</text>
+  <text x="1086" y="481" fill="#9ba3b7" font-size="12" font-weight="500">Role</text>
+  <text x="1160" y="481" fill="#9ba3b7" font-size="12" font-weight="500">Status</text>
+
+  <!-- Membership row -->
+  <rect x="798" y="500" width="436" height="50" rx="6" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+  <text x="814" y="530" fill="#f7f8fb" font-size="14">Auth Starter Demo</text>
+  <text x="968" y="530" fill="#f7f8fb" font-size="14">authstarter</text>
+  <text x="1086" y="530" fill="#f7f8fb" font-size="14">SUPERADMIN</text>
+  <rect x="1152" y="514" width="58" height="22" rx="11" fill="rgba(61,177,137,0.15)" />
+  <text x="1181" y="530" text-anchor="middle" fill="#3db189" font-size="11" font-weight="600">ACTIVE</text>
+</svg>
