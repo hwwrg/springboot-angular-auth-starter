@@ -19,7 +19,7 @@ docker compose up --build
 
 This starts:
 
-- `postgres` on `127.0.0.1:5432`
+- `db` on `127.0.0.1:5432`
 - `backend` on `127.0.0.1:8080`
 
 The Compose file sets local backend variables directly and is local-only. Use [../../.env.example](../../.env.example) for safe defaults. Use [../../.env.local.example](../../.env.local.example) only when you need local demo credentials.
