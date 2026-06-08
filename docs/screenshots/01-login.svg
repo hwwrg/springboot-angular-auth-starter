@@ -1,0 +1,72 @@
+<svg viewBox="0 0 1280 800" xmlns="http://www.w3.org/2000/svg" font-family="Inter, system-ui, sans-serif">
+  <defs>
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1f2e" />
+      <stop offset="100%" stop-color="#12151c" />
+    </linearGradient>
+    <radialGradient id="gold-glow" cx="100%" cy="0%" r="50%">
+      <stop offset="0%" stop-color="#c7a86a" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#c7a86a" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="800" fill="url(#bg-grad)" />
+  <rect width="1280" height="800" fill="url(#gold-glow)" />
+
+  <!-- Left visual panel -->
+  <rect x="0" y="0" width="560" height="800" fill="#181d27" />
+  <rect x="0" y="0" width="560" height="800" fill="url(#gold-glow)" />
+
+  <!-- Brand -->
+  <rect x="52" y="52" width="40" height="40" rx="10" fill="#c7a86a" />
+  <text x="72" y="78" text-anchor="middle" fill="#16110a" font-size="22" font-weight="800">A</text>
+  <text x="104" y="74" fill="#f7f8fb" font-size="18" font-weight="800">Auth Starter</text>
+  <text x="104" y="89" fill="#9ba3b7" font-size="11" letter-spacing="0.08em">SPRING BOOT · ANGULAR</text>
+
+  <!-- Left panel content -->
+  <text x="52" y="320" fill="#c7a86a" font-size="13" font-weight="600" letter-spacing="0.1em">SECURE BY DEFAULT</text>
+  <text x="52" y="360" fill="#f7f8fb" font-size="42" font-weight="800">Sign in to</text>
+  <text x="52" y="410" fill="#f7f8fb" font-size="42" font-weight="800">your workspace</text>
+  <text x="52" y="460" fill="#9ba3b7" font-size="16" font-weight="400">Server-side sessions, CSRF protection,</text>
+  <text x="52" y="484" fill="#9ba3b7" font-size="16" font-weight="400">and role-based access control built in.</text>
+  <text x="52" y="720" fill="#9ba3b7" font-size="12">v0.1.0</text>
+
+  <!-- Divider line -->
+  <line x1="560" y1="0" x2="560" y2="800" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+
+  <!-- Right panel - card -->
+  <rect x="620" y="150" width="420" height="490" rx="16" fill="#181d27" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+
+  <!-- Card header -->
+  <text x="640" y="198" fill="#c7a86a" font-size="12" font-weight="600" letter-spacing="0.1em">ACCOUNT ACCESS</text>
+  <text x="640" y="230" fill="#f7f8fb" font-size="26" font-weight="700">Sign in</text>
+  <text x="640" y="258" fill="#9ba3b7" font-size="14">Enter your credentials to continue.</text>
+
+  <!-- Email field -->
+  <text x="640" y="300" fill="#f7f8fb" font-size="13" font-weight="500">Email</text>
+  <rect x="640" y="310" width="380" height="44" rx="8" fill="#202635" stroke="rgba(255,255,255,0.14)" stroke-width="1" />
+  <text x="656" y="337" fill="#9ba3b7" font-size="14">operator@authstarter.local</text>
+
+  <!-- Password field -->
+  <text x="640" y="380" fill="#f7f8fb" font-size="13" font-weight="500">Password</text>
+  <rect x="640" y="390" width="380" height="44" rx="8" fill="#202635" stroke="rgba(255,255,255,0.14)" stroke-width="1" />
+  <text x="656" y="417" fill="#9ba3b7" font-size="14">••••••••••••••••••</text>
+  <!-- Eye icon placeholder -->
+  <circle cx="998" cy="412" r="9" fill="none" stroke="#9ba3b7" stroke-width="1.5" />
+  <circle cx="998" cy="412" r="3" fill="#9ba3b7" />
+
+  <!-- Submit button -->
+  <rect x="640" y="458" width="380" height="46" rx="8" fill="#c7a86a" />
+  <text x="830" y="486" text-anchor="middle" fill="#16110a" font-size="15" font-weight="700">Sign in</text>
+
+  <!-- Forgot password link -->
+  <text x="830" y="528" text-anchor="middle" fill="#9ba3b7" font-size="13">Forgot your password?</text>
+
+  <!-- Separator -->
+  <line x1="640" y1="560" x2="1020" y2="560" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+
+  <!-- Footer note -->
+  <text x="830" y="590" text-anchor="middle" fill="#9ba3b7" font-size="12">Protected by server-side session + CSRF</text>
+  <text x="830" y="610" text-anchor="middle" fill="#9ba3b7" font-size="12">Spring Security · PostgreSQL · Angular 20</text>
+</svg>
