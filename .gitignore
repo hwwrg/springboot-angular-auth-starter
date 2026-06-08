@@ -51,3 +51,8 @@ logs/
 .project
 .classpath
 .settings/
+
+# Local developer tool configuration
+CLAUDE.md
+CLAUDE.local.md
+.claude/
