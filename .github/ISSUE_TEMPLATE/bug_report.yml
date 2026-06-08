@@ -1,0 +1,60 @@
+name: Bug report
+description: Report a problem with the auth starter
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug. Please do not report security vulnerabilities here — see [SECURITY.md](../SECURITY.md).
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug and what you expected instead.
+      placeholder: When I do X, Y happens. I expected Z.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps so a maintainer can reproduce the issue.
+      placeholder: |
+        1. Start backend with `./gradlew bootRun --args='--spring.profiles.active=local'`
+        2. Log in as ...
+        3. Call ...
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Backend (Spring Boot / GraphQL / security)
+        - Frontend (Angular)
+        - Database / Flyway
+        - Docker / local setup
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Java version, Node/pnpm version, branch or commit.
+      placeholder: |
+        - OS: macOS 15
+        - Java: 21
+        - Node: 22.14.0 / pnpm 10.6.5
+        - Commit: abc1234
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Paste logs or stack traces. Remove any secrets.
+      render: shell
+    validations:
+      required: false
