@@ -13,3 +13,15 @@ export const BASELINE_OPERATOR: TestUser = {
   email: 'operator@authstarter.local',
   password: 'authstarter-local-password',
 };
+
+/** Organization administrator authorized for the user-management area. */
+export const ORG_ADMIN_USER: TestUser = {
+  email: 'org-admin@authstarter.local',
+  password: 'authstarter-local-password',
+};
+
+/** Standard member without access to the user-management area. */
+export const STANDARD_USER: TestUser = {
+  email: 'user@authstarter.local',
+  password: 'authstarter-local-password',
+};
