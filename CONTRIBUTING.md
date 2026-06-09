@@ -48,7 +48,7 @@ make verify
 
 ## Reporting issues
 
-Use the [GitHub issue tracker](https://github.com/woodyhua/springboot-angular-auth-starter/issues).
+Use the [GitHub issue tracker](https://github.com/hwwrg/springboot-angular-auth-starter/issues).
 For security issues, follow [SECURITY.md](./SECURITY.md) instead.
 
 ## Code style

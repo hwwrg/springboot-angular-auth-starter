@@ -23,7 +23,7 @@ This Code of Conduct applies within all project spaces — issues, pull requests
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported privately to the project maintainer at **woodyhua@gmail.com**. All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported privately to the project maintainer at **hwwrg@gmail.com**. All complaints will be reviewed and investigated promptly and fairly.
 
 Maintainers are responsible for clarifying and enforcing these standards and may take any appropriate corrective action, including removing comments, commits, or contributions that do not align with this Code of Conduct, and temporarily or permanently banning any contributor for behaviors they deem inappropriate.
 
