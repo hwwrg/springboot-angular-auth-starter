@@ -25,3 +25,9 @@ export const STANDARD_USER: TestUser = {
   email: 'user@authstarter.local',
   password: 'authstarter-local-password',
 };
+
+/**
+ * Password used when accepting an invitation during end-to-end tests. Must meet
+ * the application's password policy (12-128 characters).
+ */
+export const INVITED_USER_PASSWORD = 'invited-user-local-password';
