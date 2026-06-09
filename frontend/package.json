@@ -10,7 +10,9 @@
     "build:prod": "ng build --configuration production",
     "lint": "ng lint",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test --watch=false --browsers=ChromeHeadless"
+    "test": "ng test --watch=false --browsers=ChromeHeadless",
+    "e2e": "playwright test",
+    "e2e:install": "playwright install chromium"
   },
   "prettier": {
     "printWidth": 100,
@@ -49,6 +51,7 @@
     "@angular/cli": "20.3.24",
     "@angular/compiler-cli": "20.3.24",
     "@eslint/js": "9.35.0",
+    "@playwright/test": "^1.60.0",
     "@types/jasmine": "~5.1.15",
     "@typescript-eslint/eslint-plugin": "8.43.0",
     "@typescript-eslint/parser": "8.43.0",
