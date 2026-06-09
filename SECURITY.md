@@ -8,7 +8,7 @@ This starter is pre-1.0. Security fixes are applied to the current default branc
 
 Do not open a public issue for a suspected vulnerability.
 
-**Preferred:** Use [GitHub private security advisories](https://github.com/woodyhua/springboot-angular-auth-starter/security/advisories/new) to report confidentially.
+**Preferred:** Use [GitHub private security advisories](https://github.com/hwwrg/springboot-angular-auth-starter/security/advisories/new) to report confidentially.
 
 **Alternative:** Email the maintainer or project owner listed for your fork or distribution.
 

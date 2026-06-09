@@ -2,8 +2,8 @@
 
 # Spring Boot Angular Auth Starter
 
-[![Backend CI](https://github.com/woodyhua/springboot-angular-auth-starter/actions/workflows/backend.yml/badge.svg)](https://github.com/woodyhua/springboot-angular-auth-starter/actions/workflows/backend.yml)
-[![Frontend CI](https://github.com/woodyhua/springboot-angular-auth-starter/actions/workflows/frontend.yml/badge.svg)](https://github.com/woodyhua/springboot-angular-auth-starter/actions/workflows/frontend.yml)
+[![Backend CI](https://github.com/hwwrg/springboot-angular-auth-starter/actions/workflows/backend.yml/badge.svg)](https://github.com/hwwrg/springboot-angular-auth-starter/actions/workflows/backend.yml)
+[![Frontend CI](https://github.com/hwwrg/springboot-angular-auth-starter/actions/workflows/frontend.yml/badge.svg)](https://github.com/hwwrg/springboot-angular-auth-starter/actions/workflows/frontend.yml)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](./LICENSE)
 
 Reusable open-source starter for a Spring Boot authentication backend and Angular authentication frontend. It uses server-side sessions, CSRF protection, PostgreSQL persistence, GraphQL, and role-based access control as the default full-stack integration model.

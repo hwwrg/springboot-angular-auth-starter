@@ -13,11 +13,11 @@ Start with the documentation:
 
 ## Asking questions
 
-Open a [GitHub Discussion](https://github.com/woodyhua/springboot-angular-auth-starter/discussions) for questions, ideas, or usage help.
+Open a [GitHub Discussion](https://github.com/hwwrg/springboot-angular-auth-starter/discussions) for questions, ideas, or usage help.
 
 ## Reporting bugs
 
-Open a [GitHub issue](https://github.com/woodyhua/springboot-angular-auth-starter/issues) using the bug report template. Include:
+Open a [GitHub issue](https://github.com/hwwrg/springboot-angular-auth-starter/issues) using the bug report template. Include:
 
 - Steps to reproduce
 - Expected vs. actual behavior
@@ -26,7 +26,7 @@ Open a [GitHub issue](https://github.com/woodyhua/springboot-angular-auth-starte
 
 ## Requesting features
 
-Open a [GitHub issue](https://github.com/woodyhua/springboot-angular-auth-starter/issues) using the feature request template, or start a Discussion to gauge interest before filing.
+Open a [GitHub issue](https://github.com/hwwrg/springboot-angular-auth-starter/issues) using the feature request template, or start a Discussion to gauge interest before filing.
 
 ## Security vulnerabilities
 
