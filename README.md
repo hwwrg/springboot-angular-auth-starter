@@ -225,11 +225,14 @@ npx -y pnpm@10.6.5 run frontend:lint
 ### End-to-end tests
 
 End-to-end tests use Playwright and drive the real frontend against a running
-backend. Start PostgreSQL and the backend with Docker Compose first, since the
-suite relies on the deterministic `local` profile users:
+backend. Start PostgreSQL, the backend, and a local Mailpit mail catcher first,
+since the suite relies on the deterministic `local` profile users and reads
+invitation emails from Mailpit. The [docker-compose.e2e.yml](./docker-compose.e2e.yml)
+overlay routes account notifications through Mailpit instead of the default
+local-mock provider:
 
 ```sh
-docker compose up --build
+docker compose -f docker-compose.yml -f docker-compose.e2e.yml up --build
 ```
 
 Then, from the `frontend` directory, install the browser once and run the suite
@@ -241,7 +244,8 @@ npx -y pnpm@10.6.5 run e2e:install
 npx -y pnpm@10.6.5 run e2e
 ```
 
-The current suite covers the login, protected-route access, and logout flows.
+The current suite covers login, protected-route access, logout, role-based
+access control, and invitation acceptance with first-login password setup.
 
 ## Documentation
 

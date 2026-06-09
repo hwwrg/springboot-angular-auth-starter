@@ -1,0 +1,35 @@
+# Local-only overlay for end-to-end tests that exercise email-delivered flows
+# (invitation acceptance, password reset). Layer it on top of docker-compose.yml:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.e2e.yml up --build
+#
+# It routes account notifications through a local Mailpit mail catcher instead
+# of the default local-mock provider, so tests can read the delivered links from
+# Mailpit's HTTP API. This is intended only for local development and testing.
+services:
+  mailpit:
+    image: axllent/mailpit:v1.21
+    container_name: authstarter-mailpit
+    ports:
+      - "127.0.0.1:1025:1025"
+      - "127.0.0.1:8025:8025"
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    depends_on:
+      db:
+        condition: service_healthy
+      mailpit:
+        condition: service_healthy
+    environment:
+      AUTH_STARTER_NOTIFICATION_EMAIL_PROVIDER: smtp
+      AUTH_STARTER_NOTIFICATION_EMAIL_FROM_EMAIL: no-reply@authstarter.local
+      AUTH_STARTER_NOTIFICATION_EMAIL_FROM_NAME: Spring Boot Angular Auth Starter
+      AUTH_STARTER_SMTP_HOST: mailpit
+      AUTH_STARTER_SMTP_PORT: "1025"
+      AUTH_STARTER_SMTP_AUTH: "false"
+      AUTH_STARTER_SMTP_START_TLS: "false"
