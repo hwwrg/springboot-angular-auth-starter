@@ -1,0 +1,12 @@
+/* TypeScript settings for Playwright end-to-end specs. These files live outside
+   the application and unit-test compilations and are transpiled by Playwright. */
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/e2e",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["node"]
+  },
+  "include": ["**/*.ts", "../playwright.config.ts"]
+}

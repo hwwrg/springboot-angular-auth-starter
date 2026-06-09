@@ -222,6 +222,27 @@ npx -y pnpm@10.6.5 run backend:test
 npx -y pnpm@10.6.5 run frontend:lint
 ```
 
+### End-to-end tests
+
+End-to-end tests use Playwright and drive the real frontend against a running
+backend. Start PostgreSQL and the backend with Docker Compose first, since the
+suite relies on the deterministic `local` profile users:
+
+```sh
+docker compose up --build
+```
+
+Then, from the `frontend` directory, install the browser once and run the suite
+(Playwright starts the Angular dev server on port 4200 automatically):
+
+```sh
+cd frontend
+npx -y pnpm@10.6.5 run e2e:install
+npx -y pnpm@10.6.5 run e2e
+```
+
+The current suite covers the login, protected-route access, and logout flows.
+
 ## Documentation
 
 - [Getting started](./docs/en/getting-started.md)
