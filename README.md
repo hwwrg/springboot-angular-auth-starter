@@ -33,6 +33,7 @@ This project provides a practical baseline for authentication, authorization, us
 - Admin user creation and updates for `SUPERADMIN` and current-organization `ORG_ADMIN`
 - Invitation flow and first-login password setup with hashed single-use tokens
 - Forgot password and password reset flows with hashed tokens
+- Optional OAuth2/OIDC login (Google, GitHub, enterprise OIDC) linked to existing active accounts by verified email
 - Notification event history with `local-mock` or `smtp` email providers
 - Local Docker Compose setup for PostgreSQL and the backend
 
@@ -155,6 +156,8 @@ Admin operations requiring `SUPERADMIN` or current-organization `ORG_ADMIN`:
 Other backend endpoints:
 
 - `GET /auth/csrf`
+- `GET /auth/oauth2/providers`
+- `GET /oauth2/authorization/{registrationId}` (only with configured OAuth2 providers)
 - `GET /actuator/health`
 - `GET /actuator/health/liveness`
 - `GET /actuator/health/readiness`
@@ -183,8 +186,33 @@ Important backend variables:
 - `AUTH_STARTER_NOTIFICATION_EMAIL_PROVIDER`
 - `AUTH_STARTER_SMTP_HOST`
 - `AUTH_STARTER_SMTP_PORT`
+- `AUTH_STARTER_OAUTH2_SUCCESS_REDIRECT_URL`
+- `AUTH_STARTER_OAUTH2_FAILURE_REDIRECT_URL`
 
 Use `AUTH_STARTER_NOTIFICATION_EMAIL_PROVIDER=local-mock` for local development without a mail server. Use `smtp` with the SMTP variables in [.env.example](./.env.example) for a local mail catcher or SMTP service.
+
+### OAuth2 / OIDC login
+
+OAuth2 login is optional and disabled until at least one client registration is
+configured through standard Spring Security properties, for example:
+
+```sh
+SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID=your-client-id
+SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET=your-client-secret
+```
+
+Google and GitHub work with the built-in Spring Security provider defaults;
+enterprise OIDC providers additionally need
+`spring.security.oauth2.client.provider.*` properties such as `issuer-uri`.
+Configured providers appear automatically as buttons on the login page through
+`GET /auth/oauth2/providers`.
+
+A successful provider login is linked to an existing local account by verified
+email and establishes the same server-side session as a password login. OAuth2
+login never provisions accounts: users must already exist (for example through
+the invitation flow), be `ACTIVE`, and hold at least one active membership.
+Unlinked or failed logins are redirected back to the login page with an error
+marker.
 
 Public auth mutations have a basic in-memory rate limiter. For production or multi-instance deployments, replace or back it with distributed storage such as Redis.
 

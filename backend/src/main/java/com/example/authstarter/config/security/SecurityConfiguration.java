@@ -2,14 +2,18 @@ package com.example.authstarter.config.security;
 
 import com.example.authstarter.auth.ActiveSessionValidationFilter;
 import com.example.authstarter.auth.BaselineAuthProperties;
+import com.example.authstarter.auth.oauth2.OAuth2LoginFailureHandler;
+import com.example.authstarter.auth.oauth2.OAuth2LoginSuccessHandler;
 import com.example.authstarter.config.graphql.AuthStarterGraphQlProperties;
 import com.example.authstarter.config.graphql.GraphQlRequestBodySizeFilter;
 import java.util.List;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,7 +41,10 @@ public class SecurityConfiguration {
             CorsConfigurationSource corsConfigurationSource,
             CsrfTokenRepository csrfTokenRepository,
             ActiveSessionValidationFilter activeSessionValidationFilter,
-            GraphQlRequestBodySizeFilter graphQlRequestBodySizeFilter)
+            GraphQlRequestBodySizeFilter graphQlRequestBodySizeFilter,
+            ObjectProvider<ClientRegistrationRepository> clientRegistrationRepository,
+            OAuth2LoginSuccessHandler oauth2LoginSuccessHandler,
+            OAuth2LoginFailureHandler oauth2LoginFailureHandler)
             throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
@@ -52,6 +59,7 @@ public class SecurityConfiguration {
                                 "/actuator/health/readiness",
                                 "/actuator/info",
                                 "/auth/csrf",
+                                "/auth/oauth2/providers",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs",
@@ -66,6 +74,14 @@ public class SecurityConfiguration {
                 .addFilterBefore(graphQlRequestBodySizeFilter, CsrfFilter.class)
                 .addFilterAfter(activeSessionValidationFilter, BasicAuthenticationFilter.class)
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
+
+        // OAuth2 login is optional: the registration repository only exists when at
+        // least one spring.security.oauth2.client.registration.* entry is configured.
+        if (clientRegistrationRepository.getIfAvailable() != null) {
+            http.oauth2Login(oauth2 -> oauth2
+                    .successHandler(oauth2LoginSuccessHandler)
+                    .failureHandler(oauth2LoginFailureHandler));
+        }
 
         return http.build();
     }

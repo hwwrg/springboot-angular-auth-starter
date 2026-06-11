@@ -13,6 +13,7 @@ import {
   CsrfTokenPayload,
   InvitationPasswordSetup,
   LoginCredentials,
+  OAuth2Provider,
   PasswordReset,
   PasswordResetCompleteInput,
   PasswordResetRequestInput,
@@ -316,6 +317,17 @@ export class AuthService {
 
     const currentRoles = new Set(this.roles());
     return allowedRoles.some((role) => currentRoles.has(role));
+  }
+
+  fetchOAuth2Providers(): Observable<OAuth2Provider[]> {
+    return this.http
+      .get<OAuth2Provider[]>(`${this.runtimeConfig().backendBaseUrl}/auth/oauth2/providers`)
+      .pipe(catchError(() => of([])));
+  }
+
+  /** Absolute backend URL that starts the OAuth2 authorization flow for a provider. */
+  oauth2AuthorizationUrl(provider: OAuth2Provider): string {
+    return `${this.runtimeConfig().backendBaseUrl}${provider.authorizationUrl}`;
   }
 
   refreshCsrfToken(): Observable<CsrfTokenPayload> {

@@ -358,6 +358,33 @@ describe('AuthService', () => {
     expect(result.message).toContain('sign in');
   });
 
+  it('fetches the configured OAuth2 providers from the backend', async () => {
+    const fetchProviders = firstValueFrom(service.fetchOAuth2Providers());
+
+    httpTesting
+      .expectOne(`${environment.backendBaseUrl}/auth/oauth2/providers`)
+      .flush([{ id: 'google', label: 'Google', authorizationUrl: '/oauth2/authorization/google' }]);
+
+    const providers = await fetchProviders;
+
+    expect(providers).toEqual([
+      { id: 'google', label: 'Google', authorizationUrl: '/oauth2/authorization/google' },
+    ]);
+    expect(service.oauth2AuthorizationUrl(providers[0])).toBe(
+      `${environment.backendBaseUrl}/oauth2/authorization/google`,
+    );
+  });
+
+  it('returns no OAuth2 providers when the discovery endpoint fails', async () => {
+    const fetchProviders = firstValueFrom(service.fetchOAuth2Providers());
+
+    httpTesting
+      .expectOne(`${environment.backendBaseUrl}/auth/oauth2/providers`)
+      .flush('unavailable', { status: 503, statusText: 'Service Unavailable' });
+
+    expect(await fetchProviders).toEqual([]);
+  });
+
   it('clears stale organization context when a session expires', async () => {
     const router = TestBed.inject(Router);
     spyOn(router, 'navigate').and.resolveTo(true);

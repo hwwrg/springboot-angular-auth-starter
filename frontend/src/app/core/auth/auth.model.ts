@@ -47,6 +47,12 @@ export interface InvitationPasswordSetup {
   status: string;
 }
 
+export interface OAuth2Provider {
+  id: string;
+  label: string;
+  authorizationUrl: string;
+}
+
 export interface CsrfTokenPayload {
   headerName: string;
   parameterName: string;
