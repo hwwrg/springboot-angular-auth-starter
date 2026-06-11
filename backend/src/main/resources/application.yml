@@ -63,6 +63,9 @@ authstarter:
     password-reset:
       url:
         base-url: ${AUTH_STARTER_PASSWORD_RESET_URL:${AUTH_STARTER_FRONTEND_ORIGIN:http://localhost:4200}/reset-password}
+    oauth2:
+      success-redirect-url: ${AUTH_STARTER_OAUTH2_SUCCESS_REDIRECT_URL:${AUTH_STARTER_FRONTEND_ORIGIN:http://localhost:4200}/app/dashboard}
+      failure-redirect-url: ${AUTH_STARTER_OAUTH2_FAILURE_REDIRECT_URL:${AUTH_STARTER_FRONTEND_ORIGIN:http://localhost:4200}/login}
     baseline:
       username: ${AUTH_STARTER_BASELINE_AUTH_USERNAME:}
       password: ${AUTH_STARTER_BASELINE_AUTH_PASSWORD:}

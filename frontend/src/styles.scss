@@ -574,6 +574,36 @@ a {
   text-decoration: underline;
 }
 
+.auth-shell__sso {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 1.2rem;
+}
+
+.auth-shell__sso-divider {
+  color: var(--ml-text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.auth-shell__sso-button {
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--ml-border);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ml-text);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.auth-shell__sso-button:hover,
+.auth-shell__sso-button:focus-visible {
+  border-color: var(--ml-gold);
+}
+
 .auth-shell__form .password-field__toggle {
   border: 1px solid var(--ml-border);
   background: rgba(255, 255, 255, 0.04);

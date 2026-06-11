@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import { AuthService } from '../../../../core/auth/auth.service';
+import { OAuth2Provider } from '../../../../core/auth/auth.model';
 import { OperationalErrorService } from '../../../../core/errors/operational-error.service';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { LucideIconsModule } from '../../../../core/layout/lucide-icons.module';
@@ -107,6 +108,17 @@ const PASSWORD_MAX_LENGTH = 128;
                 {{ 'login.forgotPassword' | translate }}
               </a>
             </form>
+
+            @if (oauth2Providers().length) {
+              <div class="auth-shell__sso" role="group" [attr.aria-label]="'login.ssoTitle' | translate">
+                <span class="auth-shell__sso-divider">{{ 'login.ssoDivider' | translate }}</span>
+                @for (provider of oauth2Providers(); track provider.id) {
+                  <button type="button" class="auth-shell__sso-button" (click)="loginWithProvider(provider)">
+                    {{ 'login.ssoContinueWith' | translate }} {{ provider.label }}
+                  </button>
+                }
+              </div>
+            }
           }
         </div>
       </section>
@@ -146,10 +158,32 @@ export class LoginShellPageComponent {
   protected recoveryPasswordRequired = this.authService.mustChangePassword();
   protected loginPasswordVisible = false;
   protected recoveryPasswordVisible = false;
-  protected errorMessage =
-    this.route.snapshot.queryParamMap.get('reason') === 'expired'
-      ? 'Your session expired. Sign in again to continue.'
-      : '';
+  protected readonly oauth2Providers = signal<OAuth2Provider[]>([]);
+  protected errorMessage = this.initialErrorMessage();
+
+  constructor() {
+    this.authService
+      .fetchOAuth2Providers()
+      .subscribe((providers) => this.oauth2Providers.set(providers));
+  }
+
+  protected loginWithProvider(provider: OAuth2Provider): void {
+    window.location.href = this.authService.oauth2AuthorizationUrl(provider);
+  }
+
+  private initialErrorMessage(): string {
+    if (this.route.snapshot.queryParamMap.get('reason') === 'expired') {
+      return 'Your session expired. Sign in again to continue.';
+    }
+    const oauth2Error = this.route.snapshot.queryParamMap.get('error');
+    if (oauth2Error === 'oauth2-unlinked') {
+      return 'No active account matches the identity provider email. Contact an administrator.';
+    }
+    if (oauth2Error === 'oauth2') {
+      return 'Sign-in with the identity provider failed. Try again or use your password.';
+    }
+    return '';
+  }
 
   protected submit(): void {
     if (this.loginForm.invalid || this.submitting) {

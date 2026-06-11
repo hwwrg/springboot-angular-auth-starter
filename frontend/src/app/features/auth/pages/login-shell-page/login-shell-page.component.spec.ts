@@ -8,18 +8,27 @@ import { AuthService } from '../../../../core/auth/auth.service';
 import { RuntimeConfigService } from '../../../../core/runtime-config/runtime-config.service';
 import { LoginShellPageComponent } from './login-shell-page.component';
 
+type AuthServiceSpyMethods = Pick<
+  AuthService,
+  'login' | 'changeOwnPassword' | 'mustChangePassword' | 'fetchOAuth2Providers' | 'oauth2AuthorizationUrl'
+>;
+
 describe('LoginShellPageComponent', () => {
   let fixture: ComponentFixture<LoginShellPageComponent>;
-  let authService: jasmine.SpyObj<Pick<AuthService, 'login' | 'changeOwnPassword' | 'mustChangePassword'>>;
+  let authService: jasmine.SpyObj<AuthServiceSpyMethods>;
   let runtimeConfigService: jasmine.SpyObj<Pick<RuntimeConfigService, 'config'>>;
   let router: Router;
 
   beforeEach(async () => {
-    authService = jasmine.createSpyObj<Pick<AuthService, 'login' | 'changeOwnPassword' | 'mustChangePassword'>>(
-      'AuthService',
-      ['login', 'changeOwnPassword', 'mustChangePassword'],
-    );
+    authService = jasmine.createSpyObj<AuthServiceSpyMethods>('AuthService', [
+      'login',
+      'changeOwnPassword',
+      'mustChangePassword',
+      'fetchOAuth2Providers',
+      'oauth2AuthorizationUrl',
+    ]);
     authService.mustChangePassword.and.returnValue(false);
+    authService.fetchOAuth2Providers.and.returnValue(of([]));
     runtimeConfigService = jasmine.createSpyObj<Pick<RuntimeConfigService, 'config'>>(
       'RuntimeConfigService',
       ['config'],
@@ -51,6 +60,42 @@ describe('LoginShellPageComponent', () => {
 
   it('shows the application version on the visual panel', () => {
     expect(fixture.nativeElement.textContent).toContain('Version 0.0.0');
+  });
+
+  it('renders a single sign-on button for each configured OAuth2 provider', () => {
+    authService.fetchOAuth2Providers.and.returnValue(
+      of([
+        { id: 'google', label: 'Google', authorizationUrl: '/oauth2/authorization/google' },
+        { id: 'github', label: 'GitHub', authorizationUrl: '/oauth2/authorization/github' },
+      ]),
+    );
+
+    fixture = TestBed.createComponent(LoginShellPageComponent);
+    fixture.detectChanges();
+
+    const buttons = Array.from(
+      fixture.nativeElement.querySelectorAll('.auth-shell__sso-button') as NodeListOf<HTMLButtonElement>,
+    );
+    expect(buttons.map((button) => button.textContent?.trim())).toEqual([
+      'Continue with Google',
+      'Continue with GitHub',
+    ]);
+  });
+
+  it('hides the single sign-on section when no OAuth2 provider is configured', () => {
+    expect(fixture.nativeElement.querySelector('.auth-shell__sso')).toBeNull();
+  });
+
+  it('shows an explanation when an OAuth2 login could not be linked to an account', () => {
+    const route = TestBed.inject(ActivatedRoute);
+    (route.snapshot as { queryParamMap: ReturnType<typeof convertToParamMap> }).queryParamMap =
+      convertToParamMap({ error: 'oauth2-unlinked' });
+
+    fixture = TestBed.createComponent(LoginShellPageComponent);
+    fixture.detectChanges();
+
+    const alert = fixture.nativeElement.querySelector('[role="alert"]') as HTMLElement | null;
+    expect(alert?.textContent).toContain('No active account matches the identity provider email.');
   });
 
   it('shows a forgot-password link on the login form', () => {
