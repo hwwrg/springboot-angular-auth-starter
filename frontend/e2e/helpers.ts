@@ -1,6 +1,6 @@
 import { expect, type APIRequestContext, type Page } from '@playwright/test';
 
-import { BASELINE_OPERATOR, type TestUser } from './fixtures/users';
+import { BASELINE_OPERATOR, INVITED_USER_PASSWORD, type TestUser } from './fixtures/users';
 
 const BACKEND_URL = process.env.E2E_BACKEND_URL ?? 'http://localhost:8080';
 const MAILPIT_URL = process.env.E2E_MAILPIT_URL ?? 'http://localhost:8025';
@@ -17,6 +17,16 @@ const ADMIN_CREATE_USER_MUTATION = `
   mutation AdminCreateUser($input: CreateAdminUserInput!) {
     adminCreateUser(input: $input) {
       id
+      email
+      status
+    }
+  }
+`;
+
+const ACCEPT_USER_INVITE_MUTATION = `
+  mutation AcceptUserInvite($input: AcceptUserInviteInput!) {
+    acceptUserInvite(input: $input) {
+      userId
       email
       status
     }
@@ -94,12 +104,16 @@ export async function createInvitedUser(request: APIRequestContext): Promise<str
 }
 
 /**
- * Poll the local Mailpit mail catcher for the invitation email addressed to the
- * given recipient and return the password-setup link it contains.
+ * Poll the local Mailpit mail catcher for an email addressed to the given
+ * recipient whose body contains a link matching the pattern, and return that
+ * link. All matching messages are scanned because a recipient may receive
+ * several emails during a test (for example an invitation and then a reset).
  */
-export async function fetchInvitationLink(
+async function fetchEmailedLink(
   request: APIRequestContext,
   email: string,
+  linkPattern: RegExp,
+  description: string,
 ): Promise<string> {
   const deadline = Date.now() + 15_000;
   while (Date.now() < deadline) {
@@ -108,11 +122,11 @@ export async function fetchInvitationLink(
     });
     if (search.ok()) {
       const { messages } = (await search.json()) as { messages?: { ID: string }[] };
-      if (messages?.length) {
-        const detail = await request.get(`${MAILPIT_URL}/api/v1/message/${messages[0].ID}`);
+      for (const { ID } of messages ?? []) {
+        const detail = await request.get(`${MAILPIT_URL}/api/v1/message/${ID}`);
         const message = (await detail.json()) as { Text?: string; HTML?: string };
         const content = `${message.Text ?? ''} ${message.HTML ?? ''}`;
-        const match = content.match(/https?:\/\/[^\s"'<]*\/accept-invite\?token=[^\s"'<]+/);
+        const match = content.match(linkPattern);
         if (match) {
           return match[0];
         }
@@ -121,5 +135,58 @@ export async function fetchInvitationLink(
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
 
-  throw new Error(`No invitation email with a setup link was found for ${email}.`);
+  throw new Error(`No email with a ${description} link was found for ${email}.`);
+}
+
+/**
+ * Poll the local Mailpit mail catcher for the invitation email addressed to the
+ * given recipient and return the password-setup link it contains.
+ */
+export async function fetchInvitationLink(
+  request: APIRequestContext,
+  email: string,
+): Promise<string> {
+  return fetchEmailedLink(
+    request,
+    email,
+    /https?:\/\/[^\s"'<]*\/accept-invite\?token=[^\s"'<]+/,
+    'password setup',
+  );
+}
+
+/**
+ * Poll the local Mailpit mail catcher for the password reset email addressed to
+ * the given recipient and return the reset link it contains.
+ */
+export async function fetchPasswordResetLink(
+  request: APIRequestContext,
+  email: string,
+): Promise<string> {
+  return fetchEmailedLink(
+    request,
+    email,
+    /https?:\/\/[^\s"'<]*\/reset-password\?token=[^\s"'<]+/,
+    'password reset',
+  );
+}
+
+/**
+ * Create an invited user and accept the invitation through the API so the
+ * account is active with a known password. Used by tests that need a
+ * disposable active account (for example password reset) without exercising
+ * the invitation UI, which has its own coverage.
+ */
+export async function createActivatedUser(request: APIRequestContext): Promise<TestUser> {
+  const email = await createInvitedUser(request);
+  const setupLink = await fetchInvitationLink(request, email);
+  const token = new URL(setupLink).searchParams.get('token');
+  if (!token) {
+    throw new Error(`The invitation link for ${email} did not include a token.`);
+  }
+
+  await graphql(request, ACCEPT_USER_INVITE_MUTATION, {
+    input: { token, newPassword: INVITED_USER_PASSWORD },
+  });
+
+  return { email, password: INVITED_USER_PASSWORD };
 }

@@ -227,7 +227,7 @@ npx -y pnpm@10.6.5 run frontend:lint
 End-to-end tests use Playwright and drive the real frontend against a running
 backend. Start PostgreSQL, the backend, and a local Mailpit mail catcher first,
 since the suite relies on the deterministic `local` profile users and reads
-invitation emails from Mailpit. The [docker-compose.e2e.yml](./docker-compose.e2e.yml)
+invitation and password reset emails from Mailpit. The [docker-compose.e2e.yml](./docker-compose.e2e.yml)
 overlay routes account notifications through Mailpit instead of the default
 local-mock provider:
 
@@ -245,7 +245,13 @@ npx -y pnpm@10.6.5 run e2e
 ```
 
 The current suite covers login, protected-route access, logout, role-based
-access control, and invitation acceptance with first-login password setup.
+access control, invitation acceptance with first-login password setup, and
+password recovery through the forgot-password and reset-password flows.
+
+In CI, the [e2e workflow](./.github/workflows/e2e.yml) runs the same suite on
+every pull request and push to `main`: it starts the Docker Compose stack with
+the Mailpit overlay, waits for the backend to become ready, and executes
+`pnpm e2e` from the `frontend` directory.
 
 ## Documentation
 
