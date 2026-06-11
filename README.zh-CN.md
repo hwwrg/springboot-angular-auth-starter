@@ -123,6 +123,34 @@ cd frontend && npx -y pnpm@10.6.5 build
 make verify
 ```
 
+### 端到端测试
+
+端到端测试使用 Playwright，驱动真实的前端访问运行中的后端。请先启动
+PostgreSQL、后端以及本地的 Mailpit 邮件捕获器，因为测试套件依赖确定性的
+`local` profile 用户，并从 Mailpit 中读取邀请邮件和密码重置邮件。
+[docker-compose.e2e.yml](./docker-compose.e2e.yml) overlay 会将账户通知
+路由到 Mailpit，而不是默认的 local-mock 提供方：
+
+```sh
+docker compose -f docker-compose.yml -f docker-compose.e2e.yml up --build
+```
+
+然后在 `frontend` 目录下安装一次浏览器并运行测试套件（Playwright 会自动
+在 4200 端口启动 Angular 开发服务器）：
+
+```sh
+cd frontend
+npx -y pnpm@10.6.5 run e2e:install
+npx -y pnpm@10.6.5 run e2e
+```
+
+当前套件覆盖登录、受保护路由访问、登出、基于角色的访问控制、邀请接受
+及首次登录密码设置，以及通过忘记密码和重置密码流程进行的密码找回。
+
+在 CI 中，[e2e workflow](./.github/workflows/e2e.yml) 会在每个 pull request
+和推送到 `main` 时运行相同的套件：它使用 Mailpit overlay 启动 Docker Compose
+栈，等待后端就绪，然后在 `frontend` 目录下执行 `pnpm e2e`。
+
 ## 文档
 
 - [入门](./docs/zh-CN/getting-started.md)

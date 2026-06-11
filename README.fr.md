@@ -123,6 +123,41 @@ Ou depuis la racine du dépôt :
 make verify
 ```
 
+### Tests de bout en bout
+
+Les tests de bout en bout utilisent Playwright et pilotent le vrai frontend
+contre un backend en cours d'exécution. Démarrez d'abord PostgreSQL, le backend
+et un capteur de mails Mailpit local, car la suite repose sur les utilisateurs
+déterministes du profil `local` et lit les emails d'invitation et de
+réinitialisation de mot de passe depuis Mailpit. L'overlay
+[docker-compose.e2e.yml](./docker-compose.e2e.yml) route les notifications de
+compte via Mailpit au lieu du fournisseur local-mock par défaut :
+
+```sh
+docker compose -f docker-compose.yml -f docker-compose.e2e.yml up --build
+```
+
+Ensuite, depuis le répertoire `frontend`, installez le navigateur une fois et
+lancez la suite (Playwright démarre automatiquement le serveur de
+développement Angular sur le port 4200) :
+
+```sh
+cd frontend
+npx -y pnpm@10.6.5 run e2e:install
+npx -y pnpm@10.6.5 run e2e
+```
+
+La suite actuelle couvre la connexion, l'accès aux routes protégées, la
+déconnexion, le contrôle d'accès basé sur les rôles, l'acceptation
+d'invitation avec définition du mot de passe à la première connexion, et la
+récupération de mot de passe via les flux de mot de passe oublié et de
+réinitialisation.
+
+En CI, le [workflow e2e](./.github/workflows/e2e.yml) exécute la même suite à
+chaque pull request et push sur `main` : il démarre la stack Docker Compose
+avec l'overlay Mailpit, attend que le backend soit prêt, puis exécute
+`pnpm e2e` depuis le répertoire `frontend`.
+
 ## Documentation
 
 - [Démarrage](./docs/fr/getting-started.md)
