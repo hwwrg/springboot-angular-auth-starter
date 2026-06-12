@@ -325,10 +325,7 @@ the Mailpit overlay, waits for the backend to become ready, and executes
 Planned improvements (contributions welcome):
 
 - Frontend container image and a single-command full-stack Compose setup
-- OAuth2 / OpenID Connect login support
 - Refresh token or sliding session support
-- Continuous integration for the Playwright end-to-end suite (currently run locally)
-- Forgot-password and reset-password end-to-end coverage
 - Helm chart or example Kubernetes manifests
 - Rate limiting backed by Redis for multi-instance deployments
 - Email provider plugins beyond SMTP (SendGrid, Mailgun)
