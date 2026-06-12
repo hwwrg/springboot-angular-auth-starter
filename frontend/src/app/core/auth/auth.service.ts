@@ -13,10 +13,14 @@ import {
   CsrfTokenPayload,
   InvitationPasswordSetup,
   LoginCredentials,
+  MfaEnrollment,
+  MfaRecoveryCodes,
+  MfaStatus,
   OAuth2Provider,
   PasswordReset,
   PasswordResetCompleteInput,
   PasswordResetRequestInput,
+  VerifyMfaInput,
 } from './auth.model';
 
 interface GraphQlError {
@@ -39,6 +43,7 @@ const ANONYMOUS_SESSION: AuthSessionState = {
   authenticated: false,
   principal: null,
   mustChangePassword: false,
+  mfaRequired: false,
 };
 
 const CURRENT_SESSION_QUERY = `
@@ -46,6 +51,7 @@ const CURRENT_SESSION_QUERY = `
     currentSession {
       authenticated
       mustChangePassword
+      mfaRequired
       principal {
         id
         email
@@ -92,6 +98,7 @@ const LOGIN_MUTATION = `
     login(input: $input) {
       authenticated
       mustChangePassword
+      mfaRequired
       principal {
         id
         email
@@ -108,6 +115,7 @@ const LOGOUT_MUTATION = `
     logout {
       authenticated
       mustChangePassword
+      mfaRequired
       principal {
         id
         email
@@ -124,6 +132,7 @@ const CHANGE_OWN_PASSWORD_MUTATION = `
     changeOwnPassword(input: $input) {
       authenticated
       mustChangePassword
+      mfaRequired
       principal {
         id
         email
@@ -160,6 +169,60 @@ const RESET_PASSWORD_MUTATION = `
   }
 `;
 
+const VERIFY_MFA_MUTATION = `
+  mutation VerifyMfa($input: VerifyMfaInput!) {
+    verifyMfa(input: $input) {
+      authenticated
+      mustChangePassword
+      mfaRequired
+      principal {
+        id
+        email
+        displayName
+        roles
+        mustChangePassword
+      }
+    }
+  }
+`;
+
+const MFA_STATUS_QUERY = `
+  query MfaStatus {
+    mfaStatus {
+      enabled
+      pending
+      remainingRecoveryCodes
+    }
+  }
+`;
+
+const START_MFA_ENROLLMENT_MUTATION = `
+  mutation StartMfaEnrollment {
+    startMfaEnrollment {
+      secret
+      otpAuthUri
+    }
+  }
+`;
+
+const CONFIRM_MFA_ENROLLMENT_MUTATION = `
+  mutation ConfirmMfaEnrollment($input: ConfirmMfaInput!) {
+    confirmMfaEnrollment(input: $input) {
+      recoveryCodes
+    }
+  }
+`;
+
+const DISABLE_MFA_MUTATION = `
+  mutation DisableMfa {
+    disableMfa {
+      enabled
+      pending
+      remainingRecoveryCodes
+    }
+  }
+`;
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
@@ -170,6 +233,7 @@ export class AuthService {
     authenticated: false,
     principal: null,
     mustChangePassword: false,
+    mfaRequired: false,
   });
   private readonly csrfTokenState = signal<CsrfTokenPayload | null>(null);
   private readonly userProfileState = signal<CurrentUserProfile | null>(null);
@@ -178,11 +242,13 @@ export class AuthService {
     authenticated: this.sessionState().authenticated,
     principal: this.sessionState().principal,
     mustChangePassword: this.sessionState().mustChangePassword,
+    mfaRequired: this.sessionState().mfaRequired,
   }));
   readonly status = computed(() => this.sessionState().status);
   readonly isAuthenticated = computed(() => this.sessionState().authenticated);
   readonly roles = computed(() => this.sessionState().principal?.roles ?? []);
   readonly mustChangePassword = computed(() => this.sessionState().mustChangePassword);
+  readonly mfaChallengeRequired = computed(() => this.sessionState().mfaRequired);
   readonly csrfToken = computed(() => this.csrfTokenState());
   readonly userProfile = computed(() => this.userProfileState());
   readonly currentOrganization = computed(() => this.userProfileState()?.currentOrganization ?? null);
@@ -301,6 +367,50 @@ export class AuthService {
     );
   }
 
+  /** Completes a login paused for a second factor by submitting a TOTP or recovery code. */
+  verifyMfa(input: VerifyMfaInput): Observable<AuthSession> {
+    return this.ensureCsrfToken().pipe(
+      switchMap(() => this.graphql<{ verifyMfa: AuthSession }>(VERIFY_MFA_MUTATION, { input })),
+      map((response) => response.verifyMfa),
+      switchMap((session) => {
+        this.applySession(session);
+        return session.authenticated && !session.mustChangePassword
+          ? this.loadCurrentUserProfile().pipe(
+              map(() => session),
+              catchError(() => of(session)),
+            )
+          : of(session);
+      }),
+    );
+  }
+
+  mfaStatus(): Observable<MfaStatus> {
+    return this.graphql<{ mfaStatus: MfaStatus }>(MFA_STATUS_QUERY).pipe(map((response) => response.mfaStatus));
+  }
+
+  startMfaEnrollment(): Observable<MfaEnrollment> {
+    return this.ensureCsrfToken().pipe(
+      switchMap(() => this.graphql<{ startMfaEnrollment: MfaEnrollment }>(START_MFA_ENROLLMENT_MUTATION)),
+      map((response) => response.startMfaEnrollment),
+    );
+  }
+
+  confirmMfaEnrollment(input: VerifyMfaInput): Observable<MfaRecoveryCodes> {
+    return this.ensureCsrfToken().pipe(
+      switchMap(() =>
+        this.graphql<{ confirmMfaEnrollment: MfaRecoveryCodes }>(CONFIRM_MFA_ENROLLMENT_MUTATION, { input }),
+      ),
+      map((response) => response.confirmMfaEnrollment),
+    );
+  }
+
+  disableMfa(): Observable<MfaStatus> {
+    return this.ensureCsrfToken().pipe(
+      switchMap(() => this.graphql<{ disableMfa: MfaStatus }>(DISABLE_MFA_MUTATION)),
+      map((response) => response.disableMfa),
+    );
+  }
+
   handleUnauthorized(): void {
     if (this.sessionState().authenticated) {
       this.sessionState.set({ ...ANONYMOUS_SESSION, status: 'expired' });
@@ -391,6 +501,7 @@ export class AuthService {
       authenticated: session.authenticated,
       principal: session.principal,
       mustChangePassword: session.mustChangePassword,
+      mfaRequired: session.mfaRequired,
     });
 
     if (!session.authenticated || session.mustChangePassword) {

@@ -7,10 +7,12 @@ type Query {
   foundationOrganizations: [OrganizationSummary!]!
   notificationEvents: [NotificationEvent!]!
   adminManagementBaseline: AdminManagementBaseline!
+  mfaStatus: MfaStatus!
 }
 
 type Mutation {
   login(input: LoginInput!): AuthSession!
+  verifyMfa(input: VerifyMfaInput!): AuthSession!
   logout: AuthSession!
   changeOwnPassword(input: ChangeOwnPasswordInput!): AuthSession!
   acceptUserInvite(input: AcceptUserInviteInput!): InvitationPasswordSetup!
@@ -18,6 +20,9 @@ type Mutation {
   resetPassword(input: PasswordResetCompleteInput!): PasswordReset!
   adminCreateUser(input: CreateAdminUserInput!): AdminUserSummary!
   adminUpdateUser(input: UpdateAdminUserInput!): AdminUserSummary!
+  startMfaEnrollment: MfaEnrollment!
+  confirmMfaEnrollment(input: ConfirmMfaInput!): MfaRecoveryCodes!
+  disableMfa: MfaStatus!
 }
 
 type Readiness {
@@ -49,10 +54,34 @@ input ChangeOwnPasswordInput {
   newPassword: String!
 }
 
+input VerifyMfaInput {
+  code: String!
+}
+
+input ConfirmMfaInput {
+  code: String!
+}
+
 type AuthSession {
   authenticated: Boolean!
   principal: AuthPrincipal
   mustChangePassword: Boolean!
+  mfaRequired: Boolean!
+}
+
+type MfaStatus {
+  enabled: Boolean!
+  pending: Boolean!
+  remainingRecoveryCodes: Int!
+}
+
+type MfaEnrollment {
+  secret: String!
+  otpAuthUri: String!
+}
+
+type MfaRecoveryCodes {
+  recoveryCodes: [String!]!
 }
 
 type AuthPrincipal {

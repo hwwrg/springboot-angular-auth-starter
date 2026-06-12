@@ -44,6 +44,15 @@ public class PublicAuthRateLimiter {
         check(flow, StringUtils.hasText(normalizedToken) ? SecurityTokenHasher.sha256(normalizedToken) : "blank-token");
     }
 
+    /**
+     * Rate-limits by client address only. Used for the MFA challenge, where the
+     * account identity is held server-side in the session rather than supplied
+     * by the caller.
+     */
+    public void checkClient(PublicAuthFlow flow) {
+        check(flow, "client");
+    }
+
     private void check(PublicAuthFlow flow, String discriminator) {
         long nowMillis = clock.millis();
         String key = flow.name() + ":" + clientAddress() + ":" + discriminator;
@@ -95,7 +104,8 @@ public class PublicAuthRateLimiter {
         LOGIN(10, Duration.ofMinutes(1)),
         REQUEST_PASSWORD_RESET(5, Duration.ofMinutes(15)),
         RESET_PASSWORD(10, Duration.ofMinutes(15)),
-        ACCEPT_USER_INVITE(10, Duration.ofMinutes(15));
+        ACCEPT_USER_INVITE(10, Duration.ofMinutes(15)),
+        VERIFY_MFA(10, Duration.ofMinutes(5));
 
         private final int maxAttempts;
         private final Duration window;

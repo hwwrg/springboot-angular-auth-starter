@@ -7,13 +7,14 @@ import { OperationalErrorService } from '../../../../core/errors/operational-err
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { LucideIconsModule } from '../../../../core/layout/lucide-icons.module';
 import { StatusPillComponent } from '../../../../shared/ui/status-pill/status-pill.component';
+import { MfaManagementComponent } from '../../components/mfa-management/mfa-management.component';
 
 const PASSWORD_MIN_LENGTH = 12;
 const PASSWORD_MAX_LENGTH = 128;
 
 @Component({
   selector: 'app-account-profile-page',
-  imports: [ReactiveFormsModule, TranslatePipe, LucideIconsModule, StatusPillComponent],
+  imports: [ReactiveFormsModule, TranslatePipe, LucideIconsModule, StatusPillComponent, MfaManagementComponent],
   template: `
     <section class="page-hero">
       <div>
@@ -192,6 +193,8 @@ const PASSWORD_MAX_LENGTH = 128;
           }
         </div>
       </article>
+
+      <app-mfa-management />
     </section>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

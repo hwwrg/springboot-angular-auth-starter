@@ -34,6 +34,7 @@ This project provides a practical baseline for authentication, authorization, us
 - Invitation flow and first-login password setup with hashed single-use tokens
 - Forgot password and password reset flows with hashed tokens
 - Optional OAuth2/OIDC login (Google, GitHub, enterprise OIDC) linked to existing active accounts by verified email
+- Optional TOTP multi-factor authentication with single-use recovery codes
 - Notification event history with `local-mock` or `smtp` email providers
 - Local Docker Compose setup for PostgreSQL and the backend
 
@@ -133,6 +134,7 @@ Public GraphQL operations:
 - `readiness`
 - `currentSession`
 - `login`
+- `verifyMfa`
 - `logout`
 - `acceptUserInvite`
 - `requestPasswordReset`
@@ -146,6 +148,10 @@ Authenticated operations:
 - `rbacBaseline`
 - `notificationEvents`
 - `changeOwnPassword`
+- `mfaStatus`
+- `startMfaEnrollment`
+- `confirmMfaEnrollment`
+- `disableMfa`
 
 Admin operations requiring `SUPERADMIN` or current-organization `ORG_ADMIN`:
 
@@ -188,6 +194,9 @@ Important backend variables:
 - `AUTH_STARTER_SMTP_PORT`
 - `AUTH_STARTER_OAUTH2_SUCCESS_REDIRECT_URL`
 - `AUTH_STARTER_OAUTH2_FAILURE_REDIRECT_URL`
+- `AUTH_STARTER_MFA_ISSUER`
+- `AUTH_STARTER_MFA_RECOVERY_CODE_COUNT`
+- `AUTH_STARTER_MFA_VERIFICATION_STEP_TOLERANCE`
 
 Use `AUTH_STARTER_NOTIFICATION_EMAIL_PROVIDER=local-mock` for local development without a mail server. Use `smtp` with the SMTP variables in [.env.example](./.env.example) for a local mail catcher or SMTP service.
 
@@ -213,6 +222,19 @@ login never provisions accounts: users must already exist (for example through
 the invitation flow), be `ACTIVE`, and hold at least one active membership.
 Unlinked or failed logins are redirected back to the login page with an error
 marker.
+
+### Multi-factor authentication
+
+Users can enable TOTP-based two-factor authentication from the account page.
+Enrollment returns a shared secret and an `otpauth://` URI for authenticator
+apps; confirming a generated code activates MFA and issues a set of single-use
+recovery codes (shown only once). Recovery codes are stored hashed.
+
+When MFA is enabled, a correct password returns an `mfaRequired` challenge
+instead of an authenticated session: the account is held server-side until
+`verifyMfa` accepts a current TOTP code or an unused recovery code. Tune the
+issuer label, recovery-code count, and accepted time-step drift through the
+`AUTH_STARTER_MFA_*` variables.
 
 Public auth mutations have a basic in-memory rate limiter. For production or multi-instance deployments, replace or back it with distributed storage such as Redis.
 

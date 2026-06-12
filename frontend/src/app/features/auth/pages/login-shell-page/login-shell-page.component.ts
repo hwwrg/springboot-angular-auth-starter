@@ -35,7 +35,31 @@ const PASSWORD_MAX_LENGTH = 128;
             <div class="auth-shell__error" role="alert">{{ errorMessage }}</div>
           }
 
-          @if (recoveryPasswordRequired) {
+          @if (mfaChallengeRequired) {
+            <form
+              class="auth-shell__form"
+              [formGroup]="mfaForm"
+              (ngSubmit)="submitMfa()"
+              [attr.aria-label]="'login.mfaTitle' | translate"
+            >
+              <p>{{ 'login.mfaSupporting' | translate }}</p>
+              <label>
+                <span>{{ 'login.mfaCode' | translate }}</span>
+                <input
+                  formControlName="code"
+                  inputmode="numeric"
+                  autocomplete="one-time-code"
+                  placeholder="123456"
+                />
+                @if (mfaCodeError()) {
+                  <small class="field-error">{{ mfaCodeError() }}</small>
+                }
+              </label>
+              <button type="submit" [disabled]="submitting">
+                {{ submitting ? ('login.mfaSubmitting' | translate) : ('login.mfaAction' | translate) }}
+              </button>
+            </form>
+          } @else if (recoveryPasswordRequired) {
             <form
               class="auth-shell__form"
               [formGroup]="passwordChangeForm"
@@ -154,8 +178,15 @@ export class LoginShellPageComponent {
       ],
     }),
   });
+  protected readonly mfaForm = new FormGroup({
+    code: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+  });
   protected submitting = false;
   protected recoveryPasswordRequired = this.authService.mustChangePassword();
+  protected mfaChallengeRequired = false;
   protected loginPasswordVisible = false;
   protected recoveryPasswordVisible = false;
   protected readonly oauth2Providers = signal<OAuth2Provider[]>([]);
@@ -198,18 +229,62 @@ export class LoginShellPageComponent {
       .login(this.loginForm.getRawValue())
       .pipe(finalize(() => (this.submitting = false)))
       .subscribe({
-        next: () => {
+        next: (session) => {
+          if (session.mfaRequired) {
+            this.mfaChallengeRequired = true;
+            return;
+          }
           if (this.authService.mustChangePassword()) {
             this.recoveryPasswordRequired = true;
             return;
           }
-          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/app/dashboard';
-          this.router.navigateByUrl(returnUrl);
+          this.navigateAfterAuthentication();
         },
         error: (error: unknown) => {
           this.errorMessage = this.operationalErrorService.loginFailureMessage(error);
         },
       });
+  }
+
+  protected submitMfa(): void {
+    if (this.mfaForm.invalid || this.submitting) {
+      this.mfaForm.markAllAsTouched();
+      return;
+    }
+
+    this.submitting = true;
+    this.errorMessage = '';
+
+    this.authService
+      .verifyMfa({ code: this.mfaForm.getRawValue().code.trim() })
+      .pipe(finalize(() => (this.submitting = false)))
+      .subscribe({
+        next: () => {
+          this.mfaChallengeRequired = false;
+          this.mfaForm.reset();
+          if (this.authService.mustChangePassword()) {
+            this.recoveryPasswordRequired = true;
+            return;
+          }
+          this.navigateAfterAuthentication();
+        },
+        error: (error: unknown) => {
+          this.errorMessage = this.operationalErrorService.loginFailureMessage(error);
+        },
+      });
+  }
+
+  private navigateAfterAuthentication(): void {
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/app/dashboard';
+    this.router.navigateByUrl(returnUrl);
+  }
+
+  protected mfaCodeError(): string | null {
+    const control = this.mfaForm.controls.code;
+    if (!control.touched && !control.dirty) {
+      return null;
+    }
+    return control.hasError('required') ? 'Enter the verification code.' : null;
   }
 
   protected submitPasswordChange(): void {
