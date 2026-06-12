@@ -66,6 +66,10 @@ authstarter:
     oauth2:
       success-redirect-url: ${AUTH_STARTER_OAUTH2_SUCCESS_REDIRECT_URL:${AUTH_STARTER_FRONTEND_ORIGIN:http://localhost:4200}/app/dashboard}
       failure-redirect-url: ${AUTH_STARTER_OAUTH2_FAILURE_REDIRECT_URL:${AUTH_STARTER_FRONTEND_ORIGIN:http://localhost:4200}/login}
+    mfa:
+      issuer: ${AUTH_STARTER_MFA_ISSUER:Spring Boot Angular Auth Starter}
+      recovery-code-count: ${AUTH_STARTER_MFA_RECOVERY_CODE_COUNT:10}
+      verification-step-tolerance: ${AUTH_STARTER_MFA_VERIFICATION_STEP_TOLERANCE:1}
     baseline:
       username: ${AUTH_STARTER_BASELINE_AUTH_USERNAME:}
       password: ${AUTH_STARTER_BASELINE_AUTH_PASSWORD:}

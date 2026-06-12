@@ -1,9 +1,11 @@
 package com.example.authstarter.auth;
 
+import com.example.authstarter.auth.mfa.UserMfaService;
 import com.example.authstarter.foundation.CurrentUserContextService;
 import com.example.authstarter.foundation.UserSessionIdentity;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.List;
@@ -33,9 +35,16 @@ public class BaselineAuthService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaselineAuthService.class);
 
+    private static final String PENDING_MFA_PRINCIPAL_ATTRIBUTE =
+            BaselineAuthService.class.getName() + ".PENDING_MFA_PRINCIPAL";
+    private static final String PENDING_MFA_CREATED_AT_ATTRIBUTE =
+            BaselineAuthService.class.getName() + ".PENDING_MFA_CREATED_AT";
+    private static final long PENDING_MFA_TTL_MILLIS = 5 * 60 * 1000L;
+
     private final BaselineAuthProperties properties;
     private final CurrentUserContextService currentUserContextService;
     private final ObjectProvider<UserCredentialAuthenticationService> userCredentialAuthenticationService;
+    private final ObjectProvider<UserMfaService> userMfaService;
     private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
     private final SecurityContextHolderStrategy securityContextHolderStrategy =
             SecurityContextHolder.getContextHolderStrategy();
@@ -43,14 +52,45 @@ public class BaselineAuthService {
     public BaselineAuthService(
             BaselineAuthProperties properties,
             CurrentUserContextService currentUserContextService,
-            ObjectProvider<UserCredentialAuthenticationService> userCredentialAuthenticationService) {
+            ObjectProvider<UserCredentialAuthenticationService> userCredentialAuthenticationService,
+            ObjectProvider<UserMfaService> userMfaService) {
         this.properties = properties;
         this.currentUserContextService = currentUserContextService;
         this.userCredentialAuthenticationService = userCredentialAuthenticationService;
+        this.userMfaService = userMfaService;
     }
 
     public AuthSessionPayload login(LoginInput input) {
         AuthPrincipal principal = authenticate(input);
+
+        if (requiresMfa(principal)) {
+            storePendingMfaPrincipal(principal);
+            return AuthSessionPayload.mfaChallenge();
+        }
+
+        establishSession(principal);
+        return AuthSessionPayload.authenticated(principal);
+    }
+
+    /**
+     * Completes a login that was paused for a second factor: validates the
+     * submitted TOTP or recovery code against the pending principal stored in
+     * the session and, on success, establishes the authenticated session.
+     */
+    public AuthSessionPayload verifyMfa(VerifyMfaInput input) {
+        AuthPrincipal pendingPrincipal = consumePendingMfaPrincipal();
+        UserMfaService mfaService = userMfaService.getIfAvailable();
+        if (mfaService == null
+                || !mfaService.verifyChallenge(UUID.fromString(pendingPrincipal.id()), input.code())) {
+            storePendingMfaPrincipal(pendingPrincipal);
+            throw new BadCredentialsException("The verification code is incorrect.");
+        }
+
+        establishSession(pendingPrincipal);
+        return AuthSessionPayload.authenticated(pendingPrincipal);
+    }
+
+    private void establishSession(AuthPrincipal principal) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 principal,
                 null,
@@ -67,8 +107,50 @@ public class BaselineAuthService {
                 securityContext,
                 requestAttributes.getRequest(),
                 requestAttributes.getResponse());
+    }
 
-        return AuthSessionPayload.authenticated(principal);
+    private boolean requiresMfa(AuthPrincipal principal) {
+        UserMfaService mfaService = userMfaService.getIfAvailable();
+        if (mfaService == null || !isPersistedUser(principal)) {
+            return false;
+        }
+        return mfaService.isMfaEnabled(UUID.fromString(principal.id()));
+    }
+
+    private boolean isPersistedUser(AuthPrincipal principal) {
+        if (!StringUtils.hasText(principal.id())) {
+            return false;
+        }
+        try {
+            UUID.fromString(principal.id());
+            return true;
+        } catch (IllegalArgumentException ex) {
+            return false;
+        }
+    }
+
+    private void storePendingMfaPrincipal(AuthPrincipal principal) {
+        HttpSession session = currentRequestAttributes().getRequest().getSession(true);
+        session.setAttribute(PENDING_MFA_PRINCIPAL_ATTRIBUTE, principal);
+        session.setAttribute(PENDING_MFA_CREATED_AT_ATTRIBUTE, System.currentTimeMillis());
+    }
+
+    private AuthPrincipal consumePendingMfaPrincipal() {
+        HttpSession session = currentRequestAttributes().getRequest().getSession(false);
+        if (session == null) {
+            throw new BadCredentialsException("No multi-factor challenge is in progress.");
+        }
+        Object principal = session.getAttribute(PENDING_MFA_PRINCIPAL_ATTRIBUTE);
+        Object createdAt = session.getAttribute(PENDING_MFA_CREATED_AT_ATTRIBUTE);
+        session.removeAttribute(PENDING_MFA_PRINCIPAL_ATTRIBUTE);
+        session.removeAttribute(PENDING_MFA_CREATED_AT_ATTRIBUTE);
+
+        if (!(principal instanceof AuthPrincipal pendingPrincipal)
+                || !(createdAt instanceof Long createdAtMillis)
+                || System.currentTimeMillis() - createdAtMillis > PENDING_MFA_TTL_MILLIS) {
+            throw new BadCredentialsException("The multi-factor challenge has expired. Sign in again.");
+        }
+        return pendingPrincipal;
     }
 
     @Transactional
@@ -78,7 +160,7 @@ public class BaselineAuthService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("DB-backed credentials are unavailable."))
                 .changeOwnPassword(currentPrincipal, input);
-        savePrincipal(refreshedPrincipal);
+        establishSession(refreshedPrincipal);
         return AuthSessionPayload.authenticated(refreshedPrincipal);
     }
 
@@ -182,25 +264,6 @@ public class BaselineAuthService {
             throw new IllegalStateException("DB-backed password change requires a persisted user principal.", ex);
         }
         return principal;
-    }
-
-    private void savePrincipal(AuthPrincipal principal) {
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-                principal,
-                null,
-                principal.roles().stream()
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                        .toList());
-
-        SecurityContext securityContext = securityContextHolderStrategy.createEmptyContext();
-        securityContext.setAuthentication(authentication);
-        securityContextHolderStrategy.setContext(securityContext);
-
-        ServletRequestAttributes requestAttributes = currentRequestAttributes();
-        securityContextRepository.saveContext(
-                securityContext,
-                requestAttributes.getRequest(),
-                requestAttributes.getResponse());
     }
 
     private ServletRequestAttributes currentRequestAttributes() {

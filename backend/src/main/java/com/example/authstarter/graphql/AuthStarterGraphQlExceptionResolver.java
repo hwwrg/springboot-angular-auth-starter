@@ -1,6 +1,7 @@
 package com.example.authstarter.graphql;
 
 import com.example.authstarter.auth.PublicAuthRateLimitExceededException;
+import com.example.authstarter.auth.mfa.MfaOperationException;
 import com.example.authstarter.notification.AccountNotificationDeliveryException;
 import graphql.ErrorClassification;
 import graphql.GraphQLError;
@@ -27,6 +28,12 @@ class AuthStarterGraphQlExceptionResolver extends DataFetcherExceptionResolverAd
         if (ex instanceof PublicAuthRateLimitExceededException) {
             return GraphqlErrorBuilder.newError(environment)
                     .errorType(RATE_LIMITED)
+                    .message(ex.getMessage())
+                    .build();
+        }
+        if (ex instanceof MfaOperationException) {
+            return GraphqlErrorBuilder.newError(environment)
+                    .errorType(ErrorType.BAD_REQUEST)
                     .message(ex.getMessage())
                     .build();
         }

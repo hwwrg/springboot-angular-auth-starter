@@ -12,6 +12,26 @@ export interface AuthSession {
   authenticated: boolean;
   principal: AuthPrincipal | null;
   mustChangePassword: boolean;
+  mfaRequired: boolean;
+}
+
+export interface VerifyMfaInput {
+  code: string;
+}
+
+export interface MfaStatus {
+  enabled: boolean;
+  pending: boolean;
+  remainingRecoveryCodes: number;
+}
+
+export interface MfaEnrollment {
+  secret: string;
+  otpAuthUri: string;
+}
+
+export interface MfaRecoveryCodes {
+  recoveryCodes: string[];
 }
 
 export interface LoginCredentials {

@@ -358,6 +358,78 @@ describe('AuthService', () => {
     expect(result.message).toContain('sign in');
   });
 
+  it('completes a second-factor challenge through the verifyMfa mutation', async () => {
+    const verify = firstValueFrom(service.verifyMfa({ code: '123456' }));
+
+    httpTesting.expectOne(`${environment.backendBaseUrl}/auth/csrf`).flush({
+      headerName: 'X-XSRF-TOKEN',
+      parameterName: '_csrf',
+      token: 'csrf-token',
+    });
+
+    const verifyRequest = httpTesting.expectOne(environment.graphql.endpoint);
+    expect(verifyRequest.request.body.query).toContain('mutation VerifyMfa');
+    expect(verifyRequest.request.body.variables.input).toEqual({ code: '123456' });
+    verifyRequest.flush({
+      data: {
+        verifyMfa: {
+          authenticated: true,
+          mustChangePassword: false,
+          mfaRequired: false,
+          principal: {
+            id: '30000000-0000-4000-8000-000000000099',
+            email: 'mfa@example.test',
+            displayName: 'MFA User',
+            roles: ['USER'],
+            mustChangePassword: false,
+          },
+        },
+      },
+    });
+
+    // Authenticated sessions load the current user profile as a follow-up request.
+    httpTesting.expectOne(environment.graphql.endpoint).flush({ data: { currentUserProfile: null } });
+
+    const session = await verify;
+    expect(session.authenticated).toBeTrue();
+    expect(service.isAuthenticated()).toBeTrue();
+  });
+
+  it('starts and confirms MFA enrollment, returning recovery codes', async () => {
+    const start = firstValueFrom(service.startMfaEnrollment());
+    httpTesting.expectOne(`${environment.backendBaseUrl}/auth/csrf`).flush({
+      headerName: 'X-XSRF-TOKEN',
+      parameterName: '_csrf',
+      token: 'csrf-token',
+    });
+    const startRequest = httpTesting.expectOne(environment.graphql.endpoint);
+    expect(startRequest.request.body.query).toContain('mutation StartMfaEnrollment');
+    startRequest.flush({
+      data: { startMfaEnrollment: { secret: 'JBSWY3DPEHPK3PXP', otpAuthUri: 'otpauth://totp/x' } },
+    });
+    expect((await start).secret).toBe('JBSWY3DPEHPK3PXP');
+
+    const confirm = firstValueFrom(service.confirmMfaEnrollment({ code: '123456' }));
+    const confirmRequest = httpTesting.expectOne(environment.graphql.endpoint);
+    expect(confirmRequest.request.body.query).toContain('mutation ConfirmMfaEnrollment');
+    expect(confirmRequest.request.body.variables.input).toEqual({ code: '123456' });
+    confirmRequest.flush({ data: { confirmMfaEnrollment: { recoveryCodes: ['AAAA-BBBB-CCCC'] } } });
+
+    expect((await confirm).recoveryCodes).toEqual(['AAAA-BBBB-CCCC']);
+  });
+
+  it('reads the current MFA status', async () => {
+    const status = firstValueFrom(service.mfaStatus());
+
+    const statusRequest = httpTesting.expectOne(environment.graphql.endpoint);
+    expect(statusRequest.request.body.query).toContain('query MfaStatus');
+    statusRequest.flush({
+      data: { mfaStatus: { enabled: true, pending: false, remainingRecoveryCodes: 9 } },
+    });
+
+    expect(await status).toEqual({ enabled: true, pending: false, remainingRecoveryCodes: 9 });
+  });
+
   it('fetches the configured OAuth2 providers from the backend', async () => {
     const fetchProviders = firstValueFrom(service.fetchOAuth2Providers());
 

@@ -7,19 +7,34 @@ import { AccountProfilePageComponent } from './account-profile-page.component';
 describe('AccountProfilePageComponent', () => {
   let fixture: ComponentFixture<AccountProfilePageComponent>;
   let authService: jasmine.SpyObj<
-    Pick<AuthService, 'changeOwnPassword' | 'userProfile' | 'currentOrganization' | 'roles' | 'session'>
+    Pick<
+      AuthService,
+      'changeOwnPassword' | 'userProfile' | 'currentOrganization' | 'roles' | 'session' | 'mfaStatus'
+    >
   >;
 
   beforeEach(async () => {
     authService = jasmine.createSpyObj<
-      Pick<AuthService, 'changeOwnPassword' | 'userProfile' | 'currentOrganization' | 'roles' | 'session'>
-    >('AuthService', ['changeOwnPassword', 'userProfile', 'currentOrganization', 'roles', 'session']);
+      Pick<
+        AuthService,
+        'changeOwnPassword' | 'userProfile' | 'currentOrganization' | 'roles' | 'session' | 'mfaStatus'
+      >
+    >('AuthService', [
+      'changeOwnPassword',
+      'userProfile',
+      'currentOrganization',
+      'roles',
+      'session',
+      'mfaStatus',
+    ]);
     authService.userProfile.and.returnValue(null);
     authService.currentOrganization.and.returnValue(null);
     authService.roles.and.returnValue(['SUPERADMIN']);
+    authService.mfaStatus.and.returnValue(of({ enabled: false, pending: false, remainingRecoveryCodes: 0 }));
     authService.session.and.returnValue({
       authenticated: true,
       mustChangePassword: false,
+      mfaRequired: false,
       principal: {
         id: 'baseline-operator',
         email: 'operator@authstarter.local',
@@ -98,6 +113,7 @@ describe('AccountProfilePageComponent', () => {
       of({
         authenticated: true,
         mustChangePassword: false,
+        mfaRequired: false,
         principal: authService.session().principal,
       }),
     );

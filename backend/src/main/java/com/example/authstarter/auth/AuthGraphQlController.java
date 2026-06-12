@@ -40,6 +40,12 @@ public class AuthGraphQlController {
     }
 
     @MutationMapping
+    public AuthSessionPayload verifyMfa(@Argument @Valid VerifyMfaInput input) {
+        rateLimiter.checkClient(PublicAuthRateLimiter.PublicAuthFlow.VERIFY_MFA);
+        return baselineAuthService.verifyMfa(input);
+    }
+
+    @MutationMapping
     public AuthSessionPayload logout() {
         return baselineAuthService.logout();
     }

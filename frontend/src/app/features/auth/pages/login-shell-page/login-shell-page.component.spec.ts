@@ -10,7 +10,12 @@ import { LoginShellPageComponent } from './login-shell-page.component';
 
 type AuthServiceSpyMethods = Pick<
   AuthService,
-  'login' | 'changeOwnPassword' | 'mustChangePassword' | 'fetchOAuth2Providers' | 'oauth2AuthorizationUrl'
+  | 'login'
+  | 'verifyMfa'
+  | 'changeOwnPassword'
+  | 'mustChangePassword'
+  | 'fetchOAuth2Providers'
+  | 'oauth2AuthorizationUrl'
 >;
 
 describe('LoginShellPageComponent', () => {
@@ -22,6 +27,7 @@ describe('LoginShellPageComponent', () => {
   beforeEach(async () => {
     authService = jasmine.createSpyObj<AuthServiceSpyMethods>('AuthService', [
       'login',
+      'verifyMfa',
       'changeOwnPassword',
       'mustChangePassword',
       'fetchOAuth2Providers',
@@ -160,6 +166,7 @@ describe('LoginShellPageComponent', () => {
       of({
         authenticated: true,
         mustChangePassword: false,
+        mfaRequired: false,
         principal: {
           id: 'baseline-operator',
           email: 'name@example.com',
@@ -178,11 +185,57 @@ describe('LoginShellPageComponent', () => {
     expect(router.navigateByUrl).toHaveBeenCalledOnceWith('/app/dashboard');
   });
 
+  it('shows the verification step instead of navigating when a second factor is required', () => {
+    authService.login.and.returnValue(
+      of({ authenticated: false, mustChangePassword: false, mfaRequired: true, principal: null }),
+    );
+    setInputValue('input[formcontrolname="email"]', 'mfa@example.test');
+    setInputValue('input[formcontrolname="password"]', 'correct-password');
+
+    const form = fixture.nativeElement.querySelector('form') as HTMLFormElement;
+    form.dispatchEvent(new Event('submit'));
+    fixture.detectChanges();
+
+    expect(router.navigateByUrl).not.toHaveBeenCalled();
+    expect(fixture.nativeElement.querySelector('input[formcontrolname="code"]')).not.toBeNull();
+  });
+
+  it('verifies the second factor and navigates to the app on success', () => {
+    authService.login.and.returnValue(
+      of({ authenticated: false, mustChangePassword: false, mfaRequired: true, principal: null }),
+    );
+    authService.verifyMfa.and.returnValue(
+      of({
+        authenticated: true,
+        mustChangePassword: false,
+        mfaRequired: false,
+        principal: {
+          id: '30000000-0000-4000-8000-000000000099',
+          email: 'mfa@example.test',
+          displayName: 'MFA User',
+          roles: ['USER'],
+          mustChangePassword: false,
+        },
+      }),
+    );
+    setInputValue('input[formcontrolname="email"]', 'mfa@example.test');
+    setInputValue('input[formcontrolname="password"]', 'correct-password');
+    (fixture.nativeElement.querySelector('form') as HTMLFormElement).dispatchEvent(new Event('submit'));
+    fixture.detectChanges();
+
+    setInputValue('input[formcontrolname="code"]', '123456');
+    (fixture.nativeElement.querySelector('form') as HTMLFormElement).dispatchEvent(new Event('submit'));
+
+    expect(authService.verifyMfa).toHaveBeenCalledOnceWith({ code: '123456' });
+    expect(router.navigateByUrl).toHaveBeenCalledOnceWith('/app/dashboard');
+  });
+
   it('shows the new password form instead of navigating when password change is required', () => {
     authService.login.and.returnValue(
       of({
         authenticated: true,
         mustChangePassword: true,
+        mfaRequired: false,
         principal: {
           id: '30000000-0000-4000-8000-000000000099',
           email: 'recovery@example.test',
@@ -211,6 +264,7 @@ describe('LoginShellPageComponent', () => {
       of({
         authenticated: true,
         mustChangePassword: false,
+        mfaRequired: false,
         principal: {
           id: '30000000-0000-4000-8000-000000000099',
           email: 'recovery@example.test',
